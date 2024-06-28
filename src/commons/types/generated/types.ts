@@ -45,11 +45,19 @@ export type ICreateBoardInput = {
 export type IMutation = {
   __typename?: 'Mutation';
   createBoard?: Maybe<Scalars['Int']['output']>;
+  updateBoard?: Maybe<IBoard>;
 };
 
 
 export type IMutationCreateBoardArgs = {
   createBoardInput?: InputMaybe<ICreateBoardInput>;
+};
+
+
+export type IMutationUpdateBoardArgs = {
+  boardId: Scalars['Int']['input'];
+  password: Scalars['String']['input'];
+  updateBoardInput?: InputMaybe<IUpdateBoardInput>;
 };
 
 export type IQuery = {
@@ -72,4 +80,15 @@ export type IQueryFetchBoardsArgs = {
 
 export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type IUpdateBoardInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  contents?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+  price?: InputMaybe<Scalars['Int']['input']>;
+  saleType?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  writer?: InputMaybe<Scalars['String']['input']>;
 };

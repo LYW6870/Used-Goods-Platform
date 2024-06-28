@@ -1,6 +1,23 @@
 import styled from '@emotion/styled';
 import { Modal } from 'antd';
 
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1200px;
+  margin: 100px;
+  padding: 100px;
+  border: none;
+  box-shadow: 0px 0px 10px gray;
+`;
+
+export const Title = styled.div`
+  font-size: 34px;
+  font-weight: bold;
+  margin-right: 20px;
+`;
+
 export const Container = styled.div`
   width: 100%;
   max-width: 700px; // 최대 너비 제한

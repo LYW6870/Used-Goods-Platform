@@ -13,5 +13,6 @@ input[type='number']::-webkit-outer-spin-button {
 
 input[type='number'] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 /* input type number 에서 오른쪽 버튼 없애기 */
