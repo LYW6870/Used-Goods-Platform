@@ -27,5 +27,5 @@ export interface IBoardWriteUIProps {
   handleSubmit: (event: React.FormEvent) => void;
   handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   isEdit: boolean;
-  data: any;
+  data?: Pick<IQuery, 'fetchBoard'>;
 }

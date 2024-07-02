@@ -38,24 +38,6 @@ export const Label = styled.label`
   color: #333;
 `;
 
-export const RadioGroup = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: start;
-`;
-
-export const RadioLabel = styled.label`
-  margin-right: 20px;
-  font-size: 16px;
-  color: #333;
-  display: flex;
-  align-items: center;
-`;
-
-export const RadioButton = styled.input`
-  margin-right: 8px;
-`;
-
 export const Select = styled.select`
   width: 100%;
   padding: 8px;
@@ -96,10 +78,11 @@ export const FieldContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-right: 20px; // 오른쪽 필드와의 간격
+  margin-right: 20px;
 
+  // 마지막 필드는 오른쪽 간격 제거
   &:last-child {
-    margin-right: 0; // 마지막 필드는 오른쪽 간격 제거
+    margin-right: 0;
   }
 `;
 
@@ -111,10 +94,8 @@ export const Input = styled.input`
 `;
 
 export const ButtonContainer = styled.div`
-  text-align: center; // 버튼을 중앙으로 정렬
-  margin-top: 20px; // 버튼 위에 약간의 공간을 추가
+  text-align: center;
+  margin-top: 20px;
 `;
-
-// type Props = {};
 
 export const Error = styled(Modal)``;

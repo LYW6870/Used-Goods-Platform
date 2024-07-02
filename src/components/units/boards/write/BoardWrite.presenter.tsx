@@ -11,7 +11,6 @@ export default function BoardWriteUI({
   isEdit,
   data,
 }: IBoardWriteUIProps) {
-  // 페이지 로딩 시 한 번만 실행되어 formData를 초기화합니다.
   useEffect(() => {
     if (data && data.fetchBoard) {
       setFormData({
@@ -26,7 +25,7 @@ export default function BoardWriteUI({
         password: '',
       });
     }
-  }, []);
+  }, [data]);
 
   // prettier-ignore
   const categoryList = [ '디지털기기', '취미/게임', '생활가전', '가구/인테리어', '의류', '화장품', '도서', '기타' ];
@@ -78,7 +77,6 @@ export default function BoardWriteUI({
               ))}
             </S.Select>
           </S.FormField>
-          {/* ㄴㄴ */}
           <S.InlineFieldContainer>
             <S.FieldContainer>
               <S.Label htmlFor="saleType">거래 방식</S.Label>
@@ -112,8 +110,6 @@ export default function BoardWriteUI({
               )}
             </S.FieldContainer>
           </S.InlineFieldContainer>
-          {/* ss */}
-
           <S.FormField>
             <S.Label htmlFor="title">제목</S.Label>
             <S.Input

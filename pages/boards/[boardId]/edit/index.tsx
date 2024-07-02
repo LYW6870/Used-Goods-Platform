@@ -7,11 +7,11 @@ import {
 } from '../../../../src/commons/types/generated/types';
 
 const FETCH_BOARD = gql`
-  query fetchBoard($boardId: ID!) {
+  query fetchBoard($boardId: Int!) {
     fetchBoard(boardId: $boardId) {
       _id
       isComplete
-      SaleType
+      saleType
       category
       price
       location
