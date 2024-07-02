@@ -30,65 +30,89 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     category: '디지털기기',
     title: '',
     contents: '',
-    price: '',
+    price: 0,
     location: '',
   });
 
-  const startCreateBoardMutation = async () => {
+  const CreateBoardMutation = async () => {
     try {
       const result = await createBoard({
         variables: {
           createBoardInput: {
-            writer: formData.writer,
-            password: formData.password,
-            isComplete: false,
-            saleType: formData.saleType,
-            category: formData.category,
-            title: formData.title,
-            contents: formData.contents,
+            ...formData,
             price: Number(formData.price),
-            location: formData.location,
           },
         },
       });
-      console.log(result.data?.createBoard);
+      Modal.success({
+        content: ` ${result.data?.createBoard}번 게시글이 등록되었습니다.`,
+      });
     } catch (error) {
       Modal.error({ content: error.message });
     }
   };
 
-  // saleType: "판매",
+  // 변경 사항 확인 함수
+  function hasChanges(initial, current) {
+    // 두 객체에 공통적으로 존재하는 Key들을 배열로 추출
+    const commonKeys = Object.keys(initial).filter((key) => key in current);
+    return commonKeys.some((key) => {
+      const initialValue = initial[key];
+      const currentValue = current[key];
+      return initialValue !== currentValue;
+    });
+  }
 
-  const startUpdateBoardMutation = async () => {
-    if (
-      data.fetchBoard.title === formData.title &&
-      data.fetchBoard.contents === formData.contents &&
-      data.fetchBoard.price === Number(formData.price) &&
-      data.fetchBoard.location === formData.location &&
-      data.fetchBoard.category === formData.category &&
-      data.fetchBoard.saleType === formData.saleType
-    ) {
-      alert('수정한 내용이 없습니다.');
+  const buildUpdateInput = (initial, current) => {
+    const fieldsToUpdate = [
+      'title',
+      'contents',
+      'price',
+      'location',
+      'category',
+      'saleType',
+      'isComplete',
+    ];
+    // 요부분 타입 불러와서 해당 타입에 맞게 할당하도록 가능한가..?
+    return fieldsToUpdate.reduce((acc, key) => {
+      if (key === 'price') {
+        const initialPrice = Number(initial[key]);
+        const currentPrice = Number(current[key]);
+        if (initialPrice !== currentPrice) {
+          acc[key] = currentPrice; // 숫자로 변환하여 업데이트
+        }
+      } else if (key === 'isComplete') {
+        // 요부분 정상작동여부 확인해보기
+        const initialPrice = Boolean(initial[key]);
+        const currentPrice = Boolean(current[key]);
+        if (initialPrice !== currentPrice) {
+          acc[key] = currentPrice; // Boolean로 변환하여 업데이트
+        }
+      } else if (initial[key] !== current[key]) {
+        acc[key] = current[key];
+      }
+      return acc;
+    }, {});
+  };
+
+  const UpdateBoardMutation = async () => {
+    if (!hasChanges(data.fetchBoard, formData)) {
+      Modal.warning({
+        content: '수정된 내용이 없습니다. 변경 사항을 입력해주세요.',
+      });
       return;
     }
     if (!formData.password) {
-      alert('비밀번호를 입력해주세요');
+      Modal.warning({
+        content: '비밀번호를 입력해주세요.',
+      });
       return;
     }
 
-    const updateBoardInput: IUpdateBoardInput = {};
-    if (data.fetchBoard.title !== formData.title)
-      updateBoardInput.title = formData.title;
-    if (data.fetchBoard.contents === formData.contents)
-      updateBoardInput.contents = formData.contents;
-    if (data.fetchBoard.price !== Number(formData.price))
-      updateBoardInput.price = Number(formData.price);
-    if (data.fetchBoard.location !== formData.location)
-      updateBoardInput.location = formData.location;
-    if (data.fetchBoard.category !== formData.category)
-      updateBoardInput.category = formData.category;
-    if (data.fetchBoard.saleType !== formData.saleType)
-      updateBoardInput.saleType = formData.saleType;
+    const updateBoardInput: IUpdateBoardInput = buildUpdateInput(
+      data.fetchBoard,
+      formData,
+    );
 
     try {
       await updateBoard({
@@ -99,7 +123,9 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
         },
       });
 
-      alert('수정 완료');
+      Modal.success({
+        content: '게시글 수정이 완료되었습니다.',
+      });
     } catch (error) {
       Modal.error({ content: error.message });
     }
@@ -127,10 +153,10 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Form 의 기본 동작인 새로 고침 및 페이지 이동 방지
-    if (isEdit === false) {
-      startCreateBoardMutation();
+    if (!isEdit) {
+      CreateBoardMutation();
     } else {
-      startUpdateBoardMutation();
+      UpdateBoardMutation();
     }
   };
 

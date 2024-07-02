@@ -1,12 +1,38 @@
-// import { useRouter } from 'next/router';
+import { gql, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import BoardWrite from '../../../../src/components/units/boards/write/BoardWrite.container';
+import {
+  IQuery,
+  IQueryFetchBoardArgs,
+} from '../../../../src/commons/types/generated/types';
 
-export default function BoardsEditPage() {
-  // const router = useRouter();
+const FETCH_BOARD = gql`
+  query fetchBoard($boardId: ID!) {
+    fetchBoard(boardId: $boardId) {
+      _id
+      isComplete
+      SaleType
+      category
+      price
+      location
+      writer
+      title
+      contents
+    }
+  }
+`;
 
-  return (
-    <>
-      <div>d</div>
-      <div>d</div>
-    </>
+export default function BoardEditPage() {
+  const router = useRouter();
+  const skipQuery = !router || typeof router.query.boardId !== 'string';
+
+  const { data } = useQuery<Pick<IQuery, 'fetchBoard'>, IQueryFetchBoardArgs>(
+    FETCH_BOARD,
+    {
+      variables: { boardId: Number(router.query.boardId) },
+      skip: skipQuery,
+    },
   );
+
+  return <BoardWrite isEdit data={data} />;
 }

@@ -15,7 +15,7 @@ export interface IBoardWriteUIProps {
     category: string;
     title: string;
     contents: string;
-    price: string;
+    price: number;
     location: string;
   };
   setFormData: React.Dispatch<React.SetStateAction<any>>;
