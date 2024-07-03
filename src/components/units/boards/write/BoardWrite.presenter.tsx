@@ -103,8 +103,8 @@ export default function BoardWriteUI({
                     value={String(formData.isComplete)}
                     onChange={handleChange}
                   >
-                    <option value="false">판매중</option>
-                    <option value="true">판매완료</option>
+                    <option value="false">거래중</option>
+                    <option value="true">거래완료</option>
                   </S.Select>
                 </>
               )}
@@ -131,7 +131,7 @@ export default function BoardWriteUI({
             />
           </S.FormField>
           <S.FormField>
-            <S.Label htmlFor="price">판매가격</S.Label>
+            <S.Label htmlFor="price">거래 가격</S.Label>
             <S.Input
               type="number"
               id="price"
@@ -142,7 +142,7 @@ export default function BoardWriteUI({
             />
           </S.FormField>
           <S.FormField>
-            <S.Label htmlFor="location">거래 희망 장소</S.Label>
+            <S.Label htmlFor="location">거래 장소</S.Label>
             <S.Input
               type="text"
               id="location"
