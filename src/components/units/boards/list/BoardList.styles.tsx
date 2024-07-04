@@ -8,6 +8,18 @@ export const Wrapper = styled.div`
 
 // or TableContainer
 export const Container = styled.div`
+  //
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  //
+  width: 100%;
+  max-width: 1600px;
+  margin: 100px;
+`;
+
+export const TableContainer = styled.div`
   width: 100%;
   max-width: 1200px; // 최대 너비 제한
   margin: 50px auto;
@@ -116,17 +128,31 @@ export const FormField = styled.div`
   margin-bottom: 20px;
 `;
 
+export const ButtonContainer = styled.div`
+  margin: 10px 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
 export const Button = styled.button`
   padding: 10px 20px;
   color: white;
   background-color: #007bff;
   border: none;
   border-radius: 4px;
+  /* text-align: center; */
   cursor: pointer;
 
   &:hover {
     background-color: #0056b3;
   }
+`;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 export const Error = styled(Modal)``;
