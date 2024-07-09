@@ -1,8 +1,5 @@
+import BoardDetail from '../../../src/components/units/boards/detail/BoardDetail.container';
+
 export default function BoardDetailPage() {
-  return (
-    <>
-      <div>d</div>
-      <div>d</div>
-    </>
-  );
+  return <BoardDetail />;
 }
