@@ -25,7 +25,7 @@ export default function BoardListUI({
             <S.ColumnHeaderDate>날짜</S.ColumnHeaderDate>
           </S.Row>
           {data?.fetchBoards.map((el) => (
-            <S.Row key={el._id}>
+            <S.Row key={String(el._id)}>
               <S.ColumnId>{el._id}</S.ColumnId>
               <S.ColumnCategory>{el.category}</S.ColumnCategory>
               <S.ColumnIsComplete>

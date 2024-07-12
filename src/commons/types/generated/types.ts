@@ -42,15 +42,45 @@ export type ICreateBoardInput = {
   writer: Scalars['String']['input'];
 };
 
+export type ICreateUserInput = {
+  name: Scalars['String']['input'];
+  socialAccount?: InputMaybe<ISocialAccountInput>;
+};
+
 export type IMutation = {
   __typename?: 'Mutation';
   createBoard?: Maybe<Scalars['Int']['output']>;
+  kakaoLogin?: Maybe<IUser>;
+  kakaoTokenCheck?: Maybe<Scalars['Boolean']['output']>;
+  logoutUser?: Maybe<Scalars['String']['output']>;
+  testAPIcreateUser?: Maybe<Scalars['Int']['output']>;
   updateBoard?: Maybe<IBoard>;
 };
 
 
 export type IMutationCreateBoardArgs = {
   createBoardInput?: InputMaybe<ICreateBoardInput>;
+};
+
+
+export type IMutationKakaoLoginArgs = {
+  code: Scalars['String']['input'];
+};
+
+
+export type IMutationKakaoTokenCheckArgs = {
+  accessToken: Scalars['String']['input'];
+};
+
+
+export type IMutationLogoutUserArgs = {
+  accessToken: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type IMutationTestApIcreateUserArgs = {
+  createUserInput?: InputMaybe<ICreateUserInput>;
 };
 
 
@@ -65,6 +95,7 @@ export type IQuery = {
   fetchBoard?: Maybe<IBoard>;
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
+  getUser?: Maybe<IUser>;
 };
 
 
@@ -83,6 +114,29 @@ export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
 };
 
+
+export type IQueryGetUserArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type ISocialAccount = {
+  __typename?: 'SocialAccount';
+  accessToken?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  provider: Scalars['String']['output'];
+  providerUserId: Scalars['String']['output'];
+  refreshToken?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['String']['output'];
+};
+
+export type ISocialAccountInput = {
+  accessToken?: InputMaybe<Scalars['String']['input']>;
+  provider: Scalars['String']['input'];
+  providerUserId: Scalars['String']['input'];
+  refreshToken?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type IUpdateBoardInput = {
   category?: InputMaybe<Scalars['String']['input']>;
   contents?: InputMaybe<Scalars['String']['input']>;
@@ -92,4 +146,15 @@ export type IUpdateBoardInput = {
   saleType?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   writer?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type IUser = {
+  __typename?: 'User';
+  address?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  rating: Scalars['Int']['output'];
+  socialAccount: ISocialAccount;
+  updatedAt: Scalars['String']['output'];
 };

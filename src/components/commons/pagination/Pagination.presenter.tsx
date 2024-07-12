@@ -16,7 +16,7 @@ export default function PaginationUI({
         (_, index) =>
           startPage + index <= lastPage && (
             <Page
-              // key={startPage + index}
+              key={Number(startPage) + Number(index)}
               onClick={onClickPage}
               id={String(startPage + index)}
               isActive={startPage + index === activedPage}

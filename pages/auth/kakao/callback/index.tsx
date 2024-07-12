@@ -12,11 +12,14 @@ import gql from 'graphql-tag';
 // 가입안되있으면 가입절차 밟고
 // 가입되어있으면 로그인  + 여기서 토큰만료시간이나 재발급 관련은 나중에 생각하기.
 const KAKAO_LOGIN = gql`
-  mutation KAKAO_LOGIN($code: String!) {
-    KAKAO_LOGIN(code: $code) {
+  mutation kakaoLogin($code: String!) {
+    kakaoLogin(code: $code) {
       # 여러과정을거쳐 반환.. 어떤값들을 반환받을까..
       id
       name
+      socialAccount {
+        accessToken
+      }
     }
   }
 `;
@@ -24,30 +27,22 @@ const KAKAO_LOGIN = gql`
 export default function KakaoCallback() {
   const router = useRouter();
   const { code } = router.query;
-  // const [updateBoard] = useMutation<
-  //   Pick<IMutation, 'updateBoard'>,
-  //   IMutationUpdateBoardArgs
-  // >(UPDATE_BOARD);
-
-  // const [login, { data, loading, error }] = useMutation(GET_KAKAO_TOKEN);
   const [login, { data, loading, error }] = useMutation(KAKAO_LOGIN);
-
-  console.log('랜더링됨');
 
   useEffect(() => {
     if (code) {
-      // login({ variables: { code } });
-      // console.log('code: ', code);
-      const result = login({ variables: { code } });
-      console.log('result: ', result);
+      login({ variables: { code } });
     }
   }, [code]);
 
   useEffect(() => {
     if (data) {
       // 로그인 후 처리
-      console.log('data: ', data);
-      router.push('/');
+      localStorage.setItem(
+        'accessToken',
+        data.kakaoLogin.socialAccount.accessToken,
+      );
+      // router.push('/');
     }
   }, [data]);
 
