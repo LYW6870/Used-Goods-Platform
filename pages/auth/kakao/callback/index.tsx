@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
+import { useMoveToPage } from '../../../../src/components/commons/hooks/customs/useMoveToPage';
 
 // 1. 사용자가 로그인을 완료하여 인가 코드를 받음
 
@@ -26,6 +26,7 @@ const KAKAO_LOGIN = gql`
 
 export default function KakaoCallback() {
   const router = useRouter();
+  const { onClickMoveToPage, visitedPage } = useMoveToPage();
   const { code } = router.query;
   const [login, { data, loading, error }] = useMutation(KAKAO_LOGIN);
 
@@ -42,7 +43,12 @@ export default function KakaoCallback() {
         'accessToken',
         data.kakaoLogin.socialAccount.accessToken,
       );
-      // router.push('/');
+      if (visitedPage) {
+        onClickMoveToPage(visitedPage);
+      } else {
+        onClickMoveToPage('/boards');
+      }
+      window.history.go(-2);
     }
   }, [data]);
 

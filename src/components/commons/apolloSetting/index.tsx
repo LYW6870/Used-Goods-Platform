@@ -1,10 +1,10 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
-const GLOBAL_STATE = new InMemoryCache();
-
 interface IApolloSettingProps {
   children: JSX.Element;
 }
+
+const GLOBAL_STATE = new InMemoryCache();
 
 export default function ApolloSetting({ children }: IApolloSettingProps) {
   const client = new ApolloClient({

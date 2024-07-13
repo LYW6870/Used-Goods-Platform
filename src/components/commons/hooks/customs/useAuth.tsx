@@ -7,7 +7,7 @@ export const useAuth = (): void => {
 
   useEffect(() => {
     if (localStorage.getItem('accessToken') === null) {
-      alert('로그인이 필요한 페이지입니다.');
+      alert('로그인후 이용 가능한 페이지입니다.');
       router.push('../../../../../auth/login');
     }
   }, []);
