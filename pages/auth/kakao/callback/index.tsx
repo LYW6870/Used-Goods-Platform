@@ -48,7 +48,7 @@ export default function KakaoCallback() {
       } else {
         onClickMoveToPage('/boards');
       }
-      window.history.go(-2);
+      window.history.go(-2); // 다른걸로 대체하기
     }
   }, [data]);
 
