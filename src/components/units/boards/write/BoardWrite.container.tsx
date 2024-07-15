@@ -22,16 +22,15 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     IMutationUpdateBoardArgs
   >(UPDATE_BOARD);
 
+  // userId, userName, boardId?
   const [formData, setFormData] = React.useState({
-    writer: '',
-    password: '',
-    isComplete: false,
-    saleType: '판매',
     category: '디지털기기',
+    isComplete: false,
     title: '',
-    contents: '',
     price: 0,
+    contents: '',
     location: '',
+    images: '',
   });
 
   const CreateBoardMutation = async () => {

@@ -44,9 +44,9 @@ export default function KakaoCallback() {
         data.kakaoLogin.socialAccount.accessToken,
       );
       if (visitedPage) {
-        onClickMoveToPage(visitedPage);
+        onClickMoveToPage(visitedPage); // 미작동
       } else {
-        onClickMoveToPage('/boards');
+        onClickMoveToPage('/boards'); // 미작동
       }
       window.history.go(-2); // 다른걸로 대체하기
     }
