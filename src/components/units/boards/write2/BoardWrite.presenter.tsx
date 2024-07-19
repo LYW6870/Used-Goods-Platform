@@ -1,18 +1,38 @@
 import React, { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import DaumPostcodeEmbed from 'react-daum-postcode';
 import * as S from './BoardWrite.styles';
 import { IBoardWriteUIProps } from './BoardWrite.types';
-import { genPlaceholderStyle } from 'antd/es/input/style';
+
+const CustomQuillEditor = dynamic(
+  () => import('../../../quill/customQuillEditor'),
+  {
+    ssr: false,
+  },
+);
+
+// prettier-ignore
+const categoryList = [ '디지털기기', '취미/게임', '생활가전', '가구/인테리어', '의류', '화장품', '도서', '기타' ];
 
 export default function BoardWriteUI({
   onClickSubmit,
   handleSubmit,
+  onChangeContents,
+  onToggleModal,
+  addressComplete,
+  setValue,
   register,
   formState,
+  isToggleModal,
   isEdit,
   data,
 }: IBoardWriteUIProps) {
-  // prettier-ignore
-  const categoryList = [ '디지털기기', '취미/게임', '생활가전', '가구/인테리어', '의류', '화장품', '도서', '기타' ];
+  useEffect(() => {
+    if (!isEdit) {
+      setValue('isComplete', 'false');
+      setValue('image', '');
+    }
+  }, [isEdit, setValue]);
 
   return (
     <S.Wrapper>
@@ -39,6 +59,9 @@ export default function BoardWriteUI({
                 max={9999999999}
                 {...register('price')}
               />
+              {formState.errors.price && (
+                <S.Error>{formState.errors.price.message}</S.Error>
+              )}
             </S.FieldContainer>
           </S.InlineFieldContainer>
           <S.FormField>
@@ -48,12 +71,55 @@ export default function BoardWriteUI({
               maxLength={40}
               {...register('title')}
             />
+            {formState.errors.title && (
+              <S.Error>{formState.errors.title.message}</S.Error>
+            )}
           </S.FormField>
-          {/* <S.FormField>
-            <S.Textarea placeholder="내용" {...register('contents')} />
-          </S.FormField> */}
+          <S.FormField>
+            <CustomQuillEditor
+              placeholder="거래 상품 설명을 적어주세요"
+              onChange={onChangeContents}
+            />
+            {formState.errors.contents && (
+              <S.Error style={{ marginTop: -20 }}>
+                {formState.errors.contents.message}
+              </S.Error>
+            )}
+          </S.FormField>
+          {isEdit ? (
+            <S.FormField>
+              <S.Select {...register('isComplete')}>
+                <option value="false">거래중</option>
+                <option value="true">거래완료</option>
+              </S.Select>
+            </S.FormField>
+          ) : null}
+          <S.FormField>
+            <S.Button type="button" onClick={onToggleModal}>
+              거래장소 선택
+            </S.Button>
+          </S.FormField>
+          <S.FormField>
+            <S.Input type="text" readOnly {...register('address')} />
+          </S.FormField>
+          <S.FormField>
+            <S.Input
+              type="text"
+              placeholder="상세주소 입력"
+              maxLength={80}
+              {...register('addressDetail')}
+            />
+          </S.FormField>
+          <S.FormField>
+            <S.Button type="submit">제출</S.Button>
+          </S.FormField>
         </form>
       </S.Container>
+      {isToggleModal && (
+        <S.AddModal open onOk={onToggleModal} onCancel={onToggleModal}>
+          <DaumPostcodeEmbed onComplete={addressComplete} />
+        </S.AddModal>
+      )}
     </S.Wrapper>
   );
 }
