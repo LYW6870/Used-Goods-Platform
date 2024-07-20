@@ -9,7 +9,7 @@ export const schema = yup.object().shape({
     .typeError('숫자만 입력 가능합니다')
     .required('가격 입력란이 비어있습니다.'),
   contents: yup.string().required('상품 설명이 비어있습니다.'),
-  address: yup.string().nullable(),
-  addressDetail: yup.string().nullable(),
-  image: yup.string().nullable(),
+  address: yup.string().nullable().default(null),
+  addressDetail: yup.string().nullable().default(null),
+  images: yup.array().of(yup.string()).nullable().default(null),
 });

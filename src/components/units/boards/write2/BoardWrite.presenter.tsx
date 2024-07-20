@@ -30,7 +30,6 @@ export default function BoardWriteUI({
   useEffect(() => {
     if (!isEdit) {
       setValue('isComplete', 'false');
-      setValue('image', '');
     }
   }, [isEdit, setValue]);
 

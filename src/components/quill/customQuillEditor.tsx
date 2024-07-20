@@ -72,7 +72,7 @@ const CustomQuillEditor = forwardRef(
             [{ size: [] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'], // 비디오 지우기
+            ['link', 'image'],
             ['clean'],
           ],
           handlers: {

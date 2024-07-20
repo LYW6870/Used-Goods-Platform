@@ -15,7 +15,7 @@ export interface IFormData {
   contents: string;
   address?: string;
   addressDetail?: string;
-  image?: string;
+  images?: string[];
 }
 
 export interface IBoardWriteProps {

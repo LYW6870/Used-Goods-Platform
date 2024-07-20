@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 // import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 // import { useMutation } from '@apollo/client';
 // import {
@@ -13,6 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 //   IUpdateBoardInput,
 // } from '../../../../commons/types/generated/types';
 // import { CREATE_BOARD, UPDATE_BOARD } from './BoardWrite.queries';
+import DOMPurify from 'dompurify';
 import type { Address } from 'react-daum-postcode';
 import { schema } from './BoardWrite.schema';
 import BoardWriteUI from './BoardWrite.presenter';
@@ -46,10 +46,29 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     trigger('contents');
   };
 
+  // contents에서 이미지를 추출하여 저장하는 함수
+  const extractUrls = (content: string): string[] => {
+    const srcRegex = /src="([^">]+)"/;
+    return content.split('<img').reduce<string[]>((acc, segment) => {
+      const match = segment.match(srcRegex);
+      if (match && match[1]) {
+        acc.push(match[1]);
+      }
+      return acc;
+    }, []);
+  };
+
   const onClickSubmit = (formData: IFormData): void => {
+    const images = extractUrls(formData.contents);
+
+    const safeContents = DOMPurify.sanitize(formData.contents);
+
+    console.log('전', formData.contents);
     const remakeFormData = {
       ...formData,
       isComplete: formData.isComplete === 'true',
+      contents: safeContents,
+      images,
     };
 
     console.log(remakeFormData);
