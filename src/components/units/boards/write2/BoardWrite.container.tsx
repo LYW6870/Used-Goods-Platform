@@ -58,12 +58,22 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     }, []);
   };
 
+  // const testString =
+  //   " XSS 공격 테스트 <script>alert('위험한 script 코드');</script> ";
+
+  const decodeHtml = (html: string) => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
   const onClickSubmit = (formData: IFormData): void => {
     const images = extractUrls(formData.contents);
 
-    const safeContents = DOMPurify.sanitize(formData.contents);
+    const decodedHtml = decodeHtml(formData.contents);
+    console.log('전', decodedHtml);
+    const safeContents = DOMPurify.sanitize(decodedHtml);
 
-    console.log('전', formData.contents);
     const remakeFormData = {
       ...formData,
       isComplete: formData.isComplete === 'true',
@@ -71,7 +81,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
       images,
     };
 
-    console.log(remakeFormData);
+    console.log('후', remakeFormData.contents);
   };
 
   const onToggleModal = (): void => {
