@@ -1,3 +1,5 @@
+// 커스텀 ReactQuill 컴포넌트
+
 import React, {
   useState,
   useMemo,
@@ -9,6 +11,7 @@ import React, {
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
+import ErrorModal from '../commons/errorModal/errorModal';
 
 interface CustomQuillEditorProps {
   placeholder: string;
@@ -17,11 +20,15 @@ interface CustomQuillEditorProps {
 
 const myPreset = process.env.NEXT_PUBLIC_CLOUDINARY_PRESET;
 const myAPIKEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+const imageMaxSize = 1 * 1024 * 1024;
 
 const CustomQuillEditor = forwardRef(
   ({ placeholder, onChange }: CustomQuillEditorProps, ref) => {
     const [editorContent, setEditorContent] = useState('');
     const quillRef = useRef<ReactQuill>(null);
+
+    const [isErrModalOpen, setIsErrModalOpen] = useState(false);
+    const [errModalMessage, setErrModalMessage] = useState('');
 
     useImperativeHandle(ref, () => ({
       getEditor: () => {
@@ -35,11 +42,17 @@ const CustomQuillEditor = forwardRef(
     const handleImageUpload = useCallback(async () => {
       const input = document.createElement('input');
       input.setAttribute('type', 'file');
-      input.setAttribute('accept', 'image/*');
+      // input.setAttribute('accept', 'image/*');
+      input.setAttribute('accept', 'image/jpeg,image/png');
       input.click();
 
       input.onchange = async () => {
         const file = input.files[0];
+        if (file.size > imageMaxSize) {
+          setErrModalMessage('이미지 파일 크기는 5MB를 초과할 수 없습니다.');
+          setIsErrModalOpen(true);
+          return;
+        }
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', myPreset);
@@ -104,16 +117,23 @@ const CustomQuillEditor = forwardRef(
     };
 
     return (
-      <ReactQuill
-        style={{ height: 400, marginBottom: 65 }}
-        ref={quillRef}
-        value={editorContent}
-        onChange={handleChange}
-        modules={modules}
-        formats={formats}
-        theme="snow"
-        placeholder={placeholder}
-      />
+      <>
+        <ReactQuill
+          style={{ height: 400, marginBottom: 65 }}
+          ref={quillRef}
+          value={editorContent}
+          onChange={handleChange}
+          modules={modules}
+          formats={formats}
+          theme="snow"
+          placeholder={placeholder}
+        />
+        <ErrorModal
+          isErrModalOpen={isErrModalOpen}
+          message={errModalMessage}
+          onClose={() => setIsErrModalOpen(false)}
+        />
+      </>
     );
   },
 );

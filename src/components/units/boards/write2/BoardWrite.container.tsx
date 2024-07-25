@@ -17,6 +17,7 @@ import type { Address } from 'react-daum-postcode';
 import { schema } from './BoardWrite.schema';
 import BoardWriteUI from './BoardWrite.presenter';
 import { IBoardWriteProps, IFormData } from './BoardWrite.types';
+import ErrorModal from '../../../commons/errorModal/errorModal';
 
 // boardId?, userId, userName
 
@@ -34,6 +35,8 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   // isComplete string에서 boolean로 변환해줘야함!
 
   const [isToggleModal, setIsToggleModal] = useState(false);
+  const [isErrModalOpen, setIsErrModalOpen] = useState(false);
+  const [errModalMessage, setErrModalMessage] = useState('');
 
   const { register, handleSubmit, setValue, formState, trigger } =
     useForm<IFormData>({
@@ -69,6 +72,12 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
 
   const onClickSubmit = (formData: IFormData): void => {
     const images = extractUrls(formData.contents);
+    console.log('이미지 갯수', images.length);
+    if (images.length > 4) {
+      setErrModalMessage('이미지는 최대 3개까지만 넣을 수 있습니다.');
+      setIsErrModalOpen(true);
+      return;
+    }
 
     const decodedHtml = decodeHtml(formData.contents);
     console.log('전', decodedHtml);
@@ -107,6 +116,11 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
         data={data}
         setValue={setValue}
         register={register}
+      />
+      <ErrorModal
+        isErrModalOpen={isErrModalOpen}
+        message={errModalMessage}
+        onClose={() => setIsErrModalOpen(false)}
       />
     </>
   );
