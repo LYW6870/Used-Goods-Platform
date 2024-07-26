@@ -17,6 +17,7 @@
     "react-hooks/exhaustive-deps": "off",
     "no-underscore-dangle": "off",
     "react/jsx-no-useless-fragment": "off",
+    "react/require-default-props": "off",
     "Unexpected console statement.": "off" // console.log에 노란밑줄 거슬림
   }
 }

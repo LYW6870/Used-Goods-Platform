@@ -16,14 +16,15 @@ export type Scalars = {
 
 export type IBoard = {
   __typename?: 'Board';
+  address?: Maybe<Scalars['String']['output']>;
+  addressDetail?: Maybe<Scalars['String']['output']>;
   category: Scalars['String']['output'];
   contents: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   deletedAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
-  images?: Maybe<Scalars['String']['output']>;
+  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   isComplete: Scalars['Boolean']['output'];
-  location?: Maybe<Scalars['String']['output']>;
   price: Scalars['Int']['output'];
   saleType: Scalars['String']['output'];
   title: Scalars['String']['output'];
@@ -33,11 +34,12 @@ export type IBoard = {
 };
 
 export type ICreateBoardInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  addressDetail?: InputMaybe<Scalars['String']['input']>;
   category: Scalars['String']['input'];
   contents: Scalars['String']['input'];
-  images?: InputMaybe<Scalars['String']['input']>;
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   isComplete: Scalars['Boolean']['input'];
-  location?: InputMaybe<Scalars['String']['input']>;
   price: Scalars['Int']['input'];
   title: Scalars['String']['input'];
   userId: Scalars['Int']['input'];
@@ -147,11 +149,12 @@ export type ISocialAccountInput = {
 };
 
 export type IUpdateBoardInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  addressDetail?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   contents?: InputMaybe<Scalars['String']['input']>;
-  images?: InputMaybe<Scalars['String']['input']>;
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   isComplete?: InputMaybe<Scalars['Boolean']['input']>;
-  location?: InputMaybe<Scalars['String']['input']>;
   price?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };

@@ -9,15 +9,15 @@ export const CREATE_BOARD = gql`
 export const UPDATE_BOARD = gql`
   mutation updateBoard(
     $boardId: Int!
-    $password: String!
+    $userId: Int!
     $updateBoardInput: UpdateBoardInput!
   ) {
     updateBoard(
       boardId: $boardId
-      password: $password
+      userId: $userId
       updateBoardInput: $updateBoardInput
     ) {
-      _id
+      id
     }
   }
 `;

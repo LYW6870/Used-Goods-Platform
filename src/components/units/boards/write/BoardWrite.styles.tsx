@@ -41,13 +41,14 @@ export const Label = styled.label`
 export const Select = styled.select`
   width: 100%;
   padding: 8px;
+  height: 2.6em;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
 
 export const Textarea = styled.textarea`
   width: 100%;
-  height: 100px;
+  height: 400px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -98,4 +99,11 @@ export const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
-export const Error = styled(Modal)``;
+export const Error = styled(Label)`
+  margin: 0px;
+  padding: 0px;
+  font-size: 14px;
+  color: red;
+`;
+
+export const AddModal = styled(Modal)``;

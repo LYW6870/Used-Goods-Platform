@@ -7,6 +7,7 @@ import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
+  useEffect, //
 } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -16,6 +17,8 @@ import ErrorModal from '../commons/errorModal/errorModal';
 interface CustomQuillEditorProps {
   placeholder: string;
   onChange: (content: string) => void;
+  //
+  propData?: string;
 }
 
 const myPreset = process.env.NEXT_PUBLIC_CLOUDINARY_PRESET;
@@ -23,12 +26,18 @@ const myAPIKEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
 const imageMaxSize = 1 * 1024 * 1024;
 
 const CustomQuillEditor = forwardRef(
-  ({ placeholder, onChange }: CustomQuillEditorProps, ref) => {
+  ({ placeholder, onChange, propData = '' }: CustomQuillEditorProps, ref) => {
     const [editorContent, setEditorContent] = useState('');
     const quillRef = useRef<ReactQuill>(null);
 
     const [isErrModalOpen, setIsErrModalOpen] = useState(false);
     const [errModalMessage, setErrModalMessage] = useState('');
+
+    useEffect(() => {
+      if (propData) {
+        setEditorContent(propData);
+      }
+    }, [propData]);
 
     useImperativeHandle(ref, () => ({
       getEditor: () => {

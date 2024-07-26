@@ -9,15 +9,16 @@ import {
 const FETCH_BOARD = gql`
   query fetchBoard($boardId: Int!) {
     fetchBoard(boardId: $boardId) {
-      _id
+      id
+      userId
       isComplete
-      saleType
       category
       price
-      location
-      writer
+      address
+      addressDetail
       title
       contents
+      images
     }
   }
 `;

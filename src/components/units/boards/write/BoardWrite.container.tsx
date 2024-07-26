@@ -1,6 +1,11 @@
-import React from 'react';
-import { Modal } from 'antd';
+import React, { useState } from 'react';
+import 'react-quill/dist/quill.snow.css';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@apollo/client';
+import DOMPurify from 'dompurify';
+import { Modal } from 'antd';
+import type { Address } from 'react-daum-postcode';
 import {
   IMutation,
   IMutationCreateBoardArgs,
@@ -8,8 +13,11 @@ import {
   IUpdateBoardInput,
 } from '../../../../commons/types/generated/types';
 import { CREATE_BOARD, UPDATE_BOARD } from './BoardWrite.queries';
+import { schema } from './BoardWrite.schema';
 import BoardWriteUI from './BoardWrite.presenter';
-import { IBoardWriteProps } from './BoardWrite.types';
+import { IBoardWriteProps, IFormData } from './BoardWrite.types';
+
+// boardId?, userId, userName
 
 export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const [createBoard] = useMutation<
@@ -22,25 +30,38 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     IMutationUpdateBoardArgs
   >(UPDATE_BOARD);
 
-  const [formData, setFormData] = React.useState({
-    writer: '',
-    password: '',
-    isComplete: false,
-    saleType: '판매',
-    category: '디지털기기',
-    title: '',
-    contents: '',
-    price: 0,
-    location: '',
-  });
+  const [isToggleModal, setIsToggleModal] = useState(false);
+  const [isErrModalOpen, setIsErrModalOpen] = useState(false);
+  const [errModalMessage, setErrModalMessage] = useState('');
+  const [addDetailOn, setAddDetailOn] = useState(false);
 
-  const CreateBoardMutation = async () => {
+  // userId, userName 받아오게 만들어야함.
+  const userId = 2;
+  const userName = '이연우';
+
+  let hasChanges = 0;
+
+  const { register, handleSubmit, setValue, formState, trigger } =
+    useForm<IFormData>({
+      resolver: yupResolver(schema) as any,
+      mode: 'onChange', // 바뀔때마다
+    });
+
+  const onChangeContents = (value: string): void => {
+    setValue('contents', value === '' ? '<p><br></p>' : value);
+    trigger('contents');
+  };
+
+  const CreateBoardMutation = async (formData: IFormData): Promise<void> => {
     try {
       const result = await createBoard({
         variables: {
           createBoardInput: {
             ...formData,
+            isComplete: formData.isComplete === 'true',
             price: Number(formData.price),
+            userId,
+            userName,
           },
         },
       });
@@ -52,73 +73,55 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     }
   };
 
-  // 변경 사항 확인 함수
-  function hasChanges(initial, current) {
-    // 두 객체에 공통적으로 존재하는 Key들을 배열로 추출
-    const commonKeys = Object.keys(initial).filter((key) => key in current);
-    return commonKeys.some((key) => {
-      const initialValue = initial[key];
-      const currentValue = current[key];
-      return initialValue !== currentValue;
-    });
-  }
-
   const buildUpdateInput = (initial, current) => {
     const fieldsToUpdate = [
-      'title',
-      'contents',
-      'price',
-      'location',
       'category',
-      'saleType',
       'isComplete',
+      'title',
+      'price',
+      'contents',
+      'address',
+      'addressDetail',
     ];
-    // 요부분 타입 불러와서 해당 타입에 맞게 할당하도록 가능한가..?
     return fieldsToUpdate.reduce((acc, key) => {
       if (key === 'price') {
         const initialPrice = Number(initial[key]);
         const currentPrice = Number(current[key]);
         if (initialPrice !== currentPrice) {
-          acc[key] = currentPrice; // 숫자로 변환하여 업데이트
+          acc[key] = currentPrice;
+          hasChanges += 1;
         }
       } else if (key === 'isComplete') {
-        // 요부분 정상작동여부 확인해보기
-        const initialPrice = Boolean(initial[key]);
-        const currentPrice = Boolean(current[key]);
-        if (initialPrice !== currentPrice) {
-          acc[key] = currentPrice; // Boolean로 변환하여 업데이트
+        const initialIsComplete = initial[key];
+        const currentIsComplete = current[key] === 'true';
+        if (initialIsComplete !== currentIsComplete) {
+          acc[key] = currentIsComplete;
+          hasChanges += 1;
         }
       } else if (initial[key] !== current[key]) {
         acc[key] = current[key];
+        hasChanges += 1;
       }
       return acc;
     }, {});
   };
 
-  const UpdateBoardMutation = async () => {
-    if (!hasChanges(data.fetchBoard, formData)) {
-      Modal.warning({
-        content: '수정된 내용이 없습니다. 변경 사항을 입력해주세요.',
-      });
-      return;
-    }
-    if (!formData.password) {
-      Modal.warning({
-        content: '비밀번호를 입력해주세요.',
-      });
-      return;
-    }
-
+  const updateBoardMutation = async (formData: IFormData): Promise<void> => {
     const updateBoardInput: IUpdateBoardInput = buildUpdateInput(
       data.fetchBoard,
       formData,
     );
 
+    if (hasChanges === 0) {
+      Modal.error({ content: '수정된 항목이 없습니다.' });
+      return;
+    }
+
     try {
       await updateBoard({
         variables: {
-          boardId: Number(data.fetchBoard._id),
-          password: formData.password,
+          boardId: Number(data.fetchBoard.id),
+          userId: Number(userId),
           updateBoardInput,
         },
       });
@@ -131,44 +134,78 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     }
   };
 
-  // 공백 입력 차단
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (
-      (e.currentTarget.name === 'writer' ||
-        e.currentTarget.name === 'password') &&
-      e.key === ' '
-    ) {
-      e.preventDefault(); // 기본동작(키입력) 차단
+  // contents에서 이미지를 추출하여 저장하는 함수
+  const extractUrls = (content: string): string[] => {
+    const srcRegex = /src="([^">]+)"/;
+    return content.split('<img').reduce<string[]>((acc, segment) => {
+      const match = segment.match(srcRegex);
+      if (match && match[1]) {
+        acc.push(match[1]);
+      }
+      return acc;
+    }, []);
+  };
+
+  const decodeHtml = (html: string) => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
+  const onClickSubmit = (formData: IFormData): void => {
+    const images = extractUrls(formData.contents);
+    if (images.length > 3) {
+      setErrModalMessage('이미지는 최대 3개까지만 넣을 수 있습니다.');
+      setIsErrModalOpen(true);
+      return;
+    }
+
+    const decodedHtml = decodeHtml(formData.contents);
+    const safeContents = DOMPurify.sanitize(decodedHtml);
+
+    const remakeFormData = {
+      ...formData,
+      contents: safeContents,
+      images,
+    };
+
+    if (isEdit) {
+      updateBoardMutation(remakeFormData);
+    } else if (!isEdit) {
+      CreateBoardMutation(remakeFormData);
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const onToggleModal = (): void => {
+    setIsToggleModal((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Form 의 기본 동작인 새로 고침 및 페이지 이동 방지
-    if (!isEdit) {
-      CreateBoardMutation();
-    } else {
-      UpdateBoardMutation();
-    }
+  const addressComplete = (addData: Address): void => {
+    setValue('address', addData.address);
+    setAddDetailOn(true);
+    onToggleModal();
   };
 
   return (
-    <BoardWriteUI
-      handleChange={handleChange}
-      handleSubmit={handleSubmit}
-      handleKeyDown={handleKeyDown}
-      formData={formData}
-      setFormData={setFormData}
-      isEdit={isEdit}
-      data={data}
-    />
+    <>
+      <BoardWriteUI
+        onClickSubmit={onClickSubmit}
+        handleSubmit={handleSubmit}
+        onChangeContents={onChangeContents}
+        formState={formState}
+        onToggleModal={onToggleModal}
+        addressComplete={addressComplete}
+        isEdit={isEdit}
+        isToggleModal={isToggleModal}
+        isErrModalOpen={isErrModalOpen}
+        addDetailOn={addDetailOn}
+        setAddDetailOn={setAddDetailOn}
+        data={data}
+        setValue={setValue}
+        register={register}
+        setIsErrModalOpen={setIsErrModalOpen}
+        errModalMessage={errModalMessage}
+      />
+    </>
   );
 }

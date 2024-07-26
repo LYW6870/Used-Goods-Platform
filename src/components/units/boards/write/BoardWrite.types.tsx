@@ -1,5 +1,22 @@
 import React from 'react';
+import {
+  FormState,
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { IQuery } from '../../../../commons/types/generated/types';
+
+export interface IFormData {
+  category: string;
+  isComplete: string;
+  title: string;
+  price: number;
+  contents: string;
+  address?: string;
+  addressDetail?: string;
+  images?: string[];
+}
 
 export interface IBoardWriteProps {
   isEdit: boolean;
@@ -7,25 +24,21 @@ export interface IBoardWriteProps {
 }
 
 export interface IBoardWriteUIProps {
-  formData: {
-    writer: string;
-    password: string;
-    isComplete: boolean;
-    saleType: string;
-    category: string;
-    title: string;
-    contents: string;
-    price: number;
-    location: string;
-  };
-  setFormData: React.Dispatch<React.SetStateAction<any>>;
-  handleChange: (
-    event: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => void;
-  handleSubmit: (event: React.FormEvent) => void;
-  handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onClickSubmit: (data: IFormData) => void;
+  // handleSubmit: UseFormHandleSubmit<IFormData, any>;
+  handleSubmit: UseFormHandleSubmit<IFormData>;
+  onToggleModal: () => void;
+  addressComplete: (data: any) => void;
+  onChangeContents: (value: string) => void;
+  formState: FormState<IFormData>;
+  setValue: UseFormSetValue<IFormData>;
+  register: UseFormRegister<IFormData>;
+  setIsErrModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setAddDetailOn: React.Dispatch<React.SetStateAction<boolean>>;
+  addDetailOn: boolean;
+  isToggleModal: boolean;
   isEdit: boolean;
   data?: Pick<IQuery, 'fetchBoard'>;
+  isErrModalOpen: boolean;
+  errModalMessage: string;
 }
