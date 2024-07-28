@@ -98,18 +98,11 @@ export default function BoardWriteUI({
             )}
           </S.FormField>
           <S.FormField>
-            {isEdit ? (
-              <CustomQuillEditor
-                placeholder="거래 상품 설명을 적어주세요"
-                onChange={onChangeContents}
-                propData={data?.fetchBoard.contents}
-              />
-            ) : (
-              <CustomQuillEditor
-                placeholder="거래 상품 설명을 적어주세요"
-                onChange={onChangeContents}
-              />
-            )}
+            <CustomQuillEditor
+              placeholder="거래 상품 설명을 적어주세요"
+              onChange={onChangeContents}
+              propData={data?.fetchBoard.contents}
+            />
             {formState.errors.contents && (
               <S.Error style={{ marginTop: -20 }}>
                 {formState.errors.contents.message}

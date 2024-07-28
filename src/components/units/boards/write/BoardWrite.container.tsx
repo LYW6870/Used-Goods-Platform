@@ -18,6 +18,7 @@ import BoardWriteUI from './BoardWrite.presenter';
 import { IBoardWriteProps, IFormData } from './BoardWrite.types';
 
 // boardId?, userId, userName
+// presenter에 error 모달 없애고 그냥 antd 모달 사용하자
 
 export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const [createBoard] = useMutation<
@@ -39,7 +40,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const userId = 2;
   const userName = '이연우';
 
-  let hasChanges = 0;
+  let isDataChange = 0;
 
   const { register, handleSubmit, setValue, formState, trigger } =
     useForm<IFormData>({
@@ -89,18 +90,18 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
         const currentPrice = Number(current[key]);
         if (initialPrice !== currentPrice) {
           acc[key] = currentPrice;
-          hasChanges += 1;
+          isDataChange += 1;
         }
       } else if (key === 'isComplete') {
         const initialIsComplete = initial[key];
         const currentIsComplete = current[key] === 'true';
         if (initialIsComplete !== currentIsComplete) {
           acc[key] = currentIsComplete;
-          hasChanges += 1;
+          isDataChange += 1;
         }
       } else if (initial[key] !== current[key]) {
         acc[key] = current[key];
-        hasChanges += 1;
+        isDataChange += 1;
       }
       return acc;
     }, {});
@@ -112,7 +113,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
       formData,
     );
 
-    if (hasChanges === 0) {
+    if (isDataChange === 0) {
       Modal.error({ content: '수정된 항목이 없습니다.' });
       return;
     }

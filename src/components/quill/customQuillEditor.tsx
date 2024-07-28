@@ -17,7 +17,6 @@ import ErrorModal from '../commons/errorModal/errorModal';
 interface CustomQuillEditorProps {
   placeholder: string;
   onChange: (content: string) => void;
-  //
   propData?: string;
 }
 

@@ -26,7 +26,6 @@ export type IBoard = {
   images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   isComplete: Scalars['Boolean']['output'];
   price: Scalars['Int']['output'];
-  saleType: Scalars['String']['output'];
   title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   userId: Scalars['Int']['output'];

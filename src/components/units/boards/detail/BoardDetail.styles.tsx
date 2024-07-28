@@ -1,126 +1,112 @@
 import styled from '@emotion/styled';
-import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
-import ReactPlayer from 'react-player';
+import { Modal } from 'antd';
 
 export const Wrapper = styled.div`
-  width: 1200px;
-  margin: 100px;
-`;
-
-export const CardWrapper = styled.div`
-  border: 1px solid black;
-  padding-top: 80px;
-  padding-bottom: 100px;
-  padding-left: 102px;
-  padding-right: 102px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 1200px;
+  margin: 100px;
+  padding: 100px;
   border: none;
   box-shadow: 0px 0px 10px gray;
 `;
 
-export const Header = styled.div`
+export const BodyContainer = styled.div`
   width: 100%;
+  max-width: 700px; // 최대 너비 제한
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ece8e8;
+  border-radius: 8px;
+`;
+
+export const FieldContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #bdbdbd;
-  padding-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
-export const AvatarWrapper = styled.div`
+export const TitleContainer = styled.div`
   display: flex;
+  background-color: #fbf3f3;
   flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  border-top: 1px solid #bbb5b5;
+  border-bottom: 1px solid #bbb5b5;
 `;
 
-export const Avatar = styled.img`
-  margin-right: 10px;
-`;
-
-export const Info = styled.div`
+export const ContextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ece8e8;
+  border-radius: 2px;
 `;
 
-export const Writer = styled.div``;
-
-export const CreatedAt = styled.div``;
-
-export const Body = styled.div`
-  width: 100%;
-  min-height: 800px;
-`;
-
-export const Title = styled.h1`
-  padding-top: 80px;
-`;
-
-export const Contents = styled.div`
-  padding-top: 40px;
-  padding-bottom: 120px;
-`;
-
-export const BottomWrapper = styled.div`
+export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  padding-top: 80px;
+  justify-content: flex-end;
 `;
 
 export const Button = styled.button`
-  width: 179px;
-  height: 45px;
-  background-color: white;
-  border: 1px solid gray;
-  margin: 0px 12px;
+  height: 50px;
+  width: 20%;
+  margin-right: 7%;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 
-  :hover {
-    background-color: gold;
-    border-color: white;
+  &:last-child {
+    margin-right: 0;
+  }
+  &:hover {
+    background-color: #0056b3;
   }
 `;
 
-export const IconWrapper = styled.div`
-  text-align: center;
-`;
-
-export const Youtube = styled(ReactPlayer)`
-  margin: auto;
-`;
-
-export const LikeWrapper = styled.div`
-  padding-top: 160px;
+export const InlineFieldContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 `;
 
-export const LocationIcon = styled.img``;
-
-export const LikeIcon = styled(LikeOutlined)`
-  font-size: 24px;
-  color: #5f90da;
-  margin: 0px 20px;
-  cursor: pointer;
+export const Text1 = styled.label`
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 10px;
 `;
 
-export const DislikeIcon = styled(DislikeOutlined)`
-  font-size: 24px;
-  color: #828282;
-  margin: 0px 20px;
-  cursor: pointer;
+export const Text2 = styled.label`
+  font-size: 18px;
+  background-color: #57ad57;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-left: 10px;
 `;
 
-export const LikeCount = styled.div`
-  color: #5f90da;
+export const ContextHtml = styled.html`
+  margin-bottom: 10px;
+  font-size: 18px;
+
+  // 이미지 사이즈 제한
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 `;
 
-export const DislikeCount = styled.div`
-  color: #828282;
+export const Error = styled.label`
+  margin: 0px;
+  padding: 0px;
+  font-size: 14px;
+  color: red;
 `;
 
-export const LinkIcon = styled.img``;
+export const AddModal = styled(Modal)``;
