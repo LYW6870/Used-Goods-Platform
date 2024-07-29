@@ -1,18 +1,27 @@
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
 import { Modal } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IMutation,
   IMutationDeleteBoardArgs,
+  IMutationUpdateIsCompleteArgs,
   IQuery,
   IQueryFetchBoardArgs,
 } from '../../../../commons/types/generated/types';
 import BoardDetailUI from './BoardDetail.presenter';
-import { DELETE_BOARD, FETCH_BOARD } from './BoardDetail.queries.';
+import {
+  DELETE_BOARD,
+  FETCH_BOARD,
+  UPDATE_IS_COMPLETE,
+} from './BoardDetail.queries.';
 
 export default function BoardDetail() {
   const router = useRouter();
+
+  // 임시 유저아이디
+  const userId = 2;
+  const [isUserPermission, setIsUserPermission] = useState(false);
 
   const { data, error } = useQuery<
     Pick<IQuery, 'fetchBoard'>,
@@ -26,38 +35,79 @@ export default function BoardDetail() {
     IMutationDeleteBoardArgs
   >(DELETE_BOARD);
 
+  const [updateIsComplete] = useMutation<
+    Pick<IMutation, 'updateIsComplete'>,
+    IMutationUpdateIsCompleteArgs
+  >(UPDATE_IS_COMPLETE);
+
   useEffect(() => {
     if (error) {
       Modal.error({ content: error.message });
-      // router.push('/');
+      router.push('/boards');
     }
   }, [error]);
 
-  // 삭제 잘 됨. userId를 받은걸로 대체해주기
-  // 물어보고 ok 누르면 삭제하게끔
-  const onClickDelete = async () => {
+  const checkUserPermission = () => {
+    if (userId === Number(data?.fetchBoard.userId)) {
+      setIsUserPermission(true);
+    }
+  };
+
+  useEffect(() => {
+    checkUserPermission();
+  }, [data]);
+
+  const BoardDelete = async () => {
     try {
       await deleteBoard({
-        variables: { boardId: Number(router.query.boardId), userId: 6 },
+        variables: { boardId: Number(router.query.boardId), userId },
       });
-      // 보드 리스트 혹은 이전페이지로 이동
-      Modal.success({ content: '게시글 삭제가 성공적으로 완료되었습니다.' });
+      Modal.success({ content: '성공적으로 게시글 삭제가 완료되었습니다.' });
+      // 보드 리스트 혹은 이전페이지로 이동하게 router.push 추가하기.
     } catch (err) {
       Modal.error({ content: err.message });
     }
+  };
+
+  const onClickDelete = () => {
+    Modal.confirm({
+      title: '게시글 삭제 확인',
+      content: '정말로 게시글을 삭제하시겠습니까?',
+      okButtonProps: { style: { float: 'right', marginRight: '10px' } },
+      cancelButtonProps: { style: { float: 'right' } },
+      onOk() {
+        BoardDelete();
+      },
+      onCancel() {},
+      onClose() {},
+    });
   };
 
   const onClickUpdate = () => {
     router.push(`/boards/${router.query.boardId}/edit`);
   };
 
-  // 3. 현재 사용자의 userid가 있고, 해당 유저 아이디가 게시글의 유저아이디와 같으면
-  // 수정 삭제 완료 버튼 활성화. 아닐경우 채팅하기 버튼만 활성화
+  const onClickCompleteBoard = async () => {
+    try {
+      await updateIsComplete({
+        variables: {
+          boardId: Number(router.query.boardId),
+          userId,
+        },
+      });
+      Modal.success({ content: '성공적으로 거래 완료 처리 되었습니다.' });
+    } catch (err) {
+      Modal.error({ content: error.message });
+    }
+  };
+
   return (
     <BoardDetailUI
       data={data}
+      isUserPermission={isUserPermission}
       onClickDelete={onClickDelete}
       onClickUpdate={onClickUpdate}
+      onClickCompleteBoard={onClickCompleteBoard}
     />
   );
 }

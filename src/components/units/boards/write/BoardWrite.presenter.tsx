@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import * as S from './BoardWrite.styles';
 import { IBoardWriteUIProps } from './BoardWrite.types';
-import ErrorModal from '../../../commons/errorModal/errorModal';
 
 const CustomQuillEditor = dynamic(
   () => import('../../../quill/customQuillEditor'),
@@ -26,11 +25,8 @@ export default function BoardWriteUI({
   formState,
   isToggleModal,
   isEdit,
-  isErrModalOpen,
   addDetailOn,
   setAddDetailOn,
-  setIsErrModalOpen,
-  errModalMessage,
   data,
 }: IBoardWriteUIProps) {
   useEffect(() => {
@@ -143,13 +139,6 @@ export default function BoardWriteUI({
         <S.AddModal open onOk={onToggleModal} onCancel={onToggleModal}>
           <DaumPostcodeEmbed onComplete={addressComplete} />
         </S.AddModal>
-      )}
-      {isErrModalOpen && (
-        <ErrorModal
-          isErrModalOpen={isErrModalOpen}
-          message={errModalMessage}
-          onClose={() => setIsErrModalOpen(false)}
-        />
       )}
     </S.Wrapper>
   );

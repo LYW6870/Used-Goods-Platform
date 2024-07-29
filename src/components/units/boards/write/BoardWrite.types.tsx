@@ -33,12 +33,9 @@ export interface IBoardWriteUIProps {
   formState: FormState<IFormData>;
   setValue: UseFormSetValue<IFormData>;
   register: UseFormRegister<IFormData>;
-  setIsErrModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAddDetailOn: React.Dispatch<React.SetStateAction<boolean>>;
   addDetailOn: boolean;
   isToggleModal: boolean;
   isEdit: boolean;
   data?: Pick<IQuery, 'fetchBoard'>;
-  isErrModalOpen: boolean;
-  errModalMessage: string;
 }

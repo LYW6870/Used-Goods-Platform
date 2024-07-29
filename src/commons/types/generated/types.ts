@@ -59,6 +59,7 @@ export type IMutation = {
   logoutUser?: Maybe<Scalars['String']['output']>;
   testAPIcreateUser?: Maybe<Scalars['Int']['output']>;
   updateBoard?: Maybe<IBoard>;
+  updateIsComplete?: Maybe<Scalars['Boolean']['output']>;
 };
 
 
@@ -97,6 +98,12 @@ export type IMutationTestApIcreateUserArgs = {
 export type IMutationUpdateBoardArgs = {
   boardId: Scalars['Int']['input'];
   updateBoardInput?: InputMaybe<IUpdateBoardInput>;
+  userId: Scalars['Int']['input'];
+};
+
+
+export type IMutationUpdateIsCompleteArgs = {
+  boardId: Scalars['Int']['input'];
   userId: Scalars['Int']['input'];
 };
 

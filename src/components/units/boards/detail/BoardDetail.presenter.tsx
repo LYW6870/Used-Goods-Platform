@@ -4,8 +4,10 @@ import { IBoardDetailUIProps } from './BoardDetail.types';
 
 export default function BoardDetailUI({
   data,
+  isUserPermission,
   onClickDelete,
   onClickUpdate,
+  onClickCompleteBoard,
 }: IBoardDetailUIProps) {
   return (
     <S.Wrapper>
@@ -15,7 +17,9 @@ export default function BoardDetailUI({
           <S.Text1>{getDate(data?.fetchBoard.createdAt)}</S.Text1>
         </S.FieldContainer>
         <S.TitleContainer>
-          <S.Text2>{data?.fetchBoard.isComplete}</S.Text2>
+          <S.Text2>
+            {data?.fetchBoard.isComplete ? '거래완료' : '거래중'}
+          </S.Text2>
           <S.Text1>{data?.fetchBoard.title}</S.Text1>
         </S.TitleContainer>
         <S.FieldContainer>
@@ -31,9 +35,15 @@ export default function BoardDetailUI({
           />
         </S.ContextContainer>
         <S.ButtonContainer>
-          <S.Button>거래 완료</S.Button>
-          <S.Button onClick={onClickUpdate}>게시글 수정</S.Button>
-          <S.Button onClick={onClickDelete}>게시글 삭제</S.Button>
+          {isUserPermission ? (
+            <S.Button onClick={onClickCompleteBoard}>거래 완료</S.Button>
+          ) : null}
+          {isUserPermission ? (
+            <S.Button onClick={onClickUpdate}>게시글 수정</S.Button>
+          ) : null}
+          {isUserPermission ? (
+            <S.Button onClick={onClickDelete}>게시글 삭제</S.Button>
+          ) : null}
           <S.Button>채팅하기</S.Button>
         </S.ButtonContainer>
       </S.BodyContainer>

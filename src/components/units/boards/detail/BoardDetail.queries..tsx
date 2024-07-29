@@ -25,3 +25,9 @@ export const DELETE_BOARD = gql`
     # {boolean} 반환값?
   }
 `;
+
+export const UPDATE_IS_COMPLETE = gql`
+  mutation updateIsComplete($boardId: Int!, $userId: Int!) {
+    updateIsComplete(boardId: $boardId, userId: $userId)
+  }
+`;

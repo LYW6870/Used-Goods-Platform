@@ -18,7 +18,6 @@ import BoardWriteUI from './BoardWrite.presenter';
 import { IBoardWriteProps, IFormData } from './BoardWrite.types';
 
 // boardId?, userId, userName
-// presenter에 error 모달 없애고 그냥 antd 모달 사용하자
 
 export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const [createBoard] = useMutation<
@@ -32,11 +31,10 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   >(UPDATE_BOARD);
 
   const [isToggleModal, setIsToggleModal] = useState(false);
-  const [isErrModalOpen, setIsErrModalOpen] = useState(false);
-  const [errModalMessage, setErrModalMessage] = useState('');
   const [addDetailOn, setAddDetailOn] = useState(false);
 
   // userId, userName 받아오게 만들어야함.
+  // 만약에 로그인이 안되어있거나, 게시글 작성자가 아니면 이전페이지로 보내버리기
   const userId = 2;
   const userName = '이연우';
 
@@ -156,8 +154,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const onClickSubmit = (formData: IFormData): void => {
     const images = extractUrls(formData.contents);
     if (images.length > 3) {
-      setErrModalMessage('이미지는 최대 3개까지만 넣을 수 있습니다.');
-      setIsErrModalOpen(true);
+      Modal.error({ content: '이미지는 최대 3개까지만 넣을 수 있습니다.' });
       return;
     }
 
@@ -198,14 +195,11 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
         addressComplete={addressComplete}
         isEdit={isEdit}
         isToggleModal={isToggleModal}
-        isErrModalOpen={isErrModalOpen}
         addDetailOn={addDetailOn}
         setAddDetailOn={setAddDetailOn}
         data={data}
         setValue={setValue}
         register={register}
-        setIsErrModalOpen={setIsErrModalOpen}
-        errModalMessage={errModalMessage}
       />
     </>
   );

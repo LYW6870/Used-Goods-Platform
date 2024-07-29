@@ -33,6 +33,7 @@ export const TitleContainer = styled.div`
   background-color: #fbf3f3;
   flex-direction: row;
   justify-content: flex-start;
+  padding: 3px;
   margin-bottom: 10px;
   border-top: 1px solid #bbb5b5;
   border-bottom: 1px solid #bbb5b5;
@@ -84,11 +85,12 @@ export const Text1 = styled.label`
 `;
 
 export const Text2 = styled.label`
+  width: 80px;
+  text-align: center;
   font-size: 18px;
-  background-color: #57ad57;
+  background-color: #6cc06c;
   border-radius: 8px;
   font-weight: bold;
-  margin-left: 10px;
 `;
 
 export const ContextHtml = styled.html`
