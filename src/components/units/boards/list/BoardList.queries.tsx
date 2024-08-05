@@ -1,15 +1,17 @@
 import { gql } from '@apollo/client';
 
 export const FETCH_BOARDS = gql`
-  query fetchBoards($page: Int, $category: String) {
-    fetchBoards(page: $page, category: $category) {
-      _id
-      category
-      saleType
+  query fetchBoards($page: Int, $category: String, $checkComplete: Boolean) {
+    fetchBoards(
+      page: $page
+      category: $category
+      checkComplete: $checkComplete
+    ) {
+      id
       isComplete
       title
       price
-      createdAt
+      images
     }
   }
 `;

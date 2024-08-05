@@ -123,6 +123,7 @@ export type IQueryFetchBoardArgs = {
 
 export type IQueryFetchBoardsArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
+  checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
 };
 

@@ -72,12 +72,6 @@ export const Button = styled.button`
   }
 `;
 
-export const InlineFieldContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-`;
-
 export const Text1 = styled.label`
   font-size: 18px;
   font-weight: bold;

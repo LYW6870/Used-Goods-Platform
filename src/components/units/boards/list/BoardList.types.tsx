@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from '@apollo/client';
-import { MouseEvent } from 'react';
+// import { MouseEvent } from 'react';
 import {
   IQuery,
   IQueryFetchBoardsArgs,
@@ -10,7 +10,10 @@ export interface IBoardListUIProps {
   refetch: (
     variables?: Partial<IQueryFetchBoardsArgs> | undefined,
   ) => Promise<ApolloQueryResult<Pick<IQuery, 'fetchBoards'>>>;
-  count?: number;
-  onClickMoveToBoardNew: () => void;
-  onClickMoveToBoardDetail: (event: MouseEvent<HTMLDivElement>) => void;
+  // count?: number;
+  // onClickMoveToBoardNew: () => void;
+  // onClickMoveToBoardDetail: (event: MouseEvent<HTMLDivElement>) => void;
+  category: string;
+  handleChangeCategory: (event) => void;
+  handleChangeComplete: (event) => void;
 }

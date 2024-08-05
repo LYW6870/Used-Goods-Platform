@@ -37,7 +37,6 @@ export default function BoardWriteUI({
 
   useEffect(() => {
     if (data && data.fetchBoard) {
-      console.log('test', data.fetchBoard.contents);
       setValue('contents', data.fetchBoard.contents);
       setValue('title', data.fetchBoard.title);
       setValue('category', data.fetchBoard.category);
