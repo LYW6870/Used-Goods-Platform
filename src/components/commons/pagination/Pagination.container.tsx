@@ -8,6 +8,8 @@ export default function Pagination({
   refetch,
   category,
   setPage,
+  searchTerm,
+  checkComplete,
 }: IPaginationProps): JSX.Element {
   const [startPage, setStartPage] = useState(1);
   const [activedPage, setActivedPage] = useState(1);
@@ -20,27 +22,41 @@ export default function Pagination({
       setPage(1);
       setActivedPage(1);
     }
-  }, [category]);
+  }, [category, searchTerm, count, checkComplete]);
 
   const onClickPage = (event: MouseEvent<HTMLSpanElement>): void => {
     const page = Number(event.currentTarget.id);
     setActivedPage(page);
     setPage(page);
-    refetch({ page, category });
+    refetch({ page, category, checkComplete, searchTerm });
   };
 
   const onClickPrevPage = (): void => {
     if (startPage === 1) return;
-    setStartPage(startPage - pagesToShow);
-    setActivedPage(startPage - pagesToShow);
-    refetch({ page: startPage - pagesToShow });
+    const page = startPage - pagesToShow;
+    setStartPage(page);
+    setActivedPage(page);
+    setPage(page);
+    refetch({
+      page,
+      category,
+      checkComplete,
+      searchTerm,
+    });
   };
 
   const onClickNextPage = (): void => {
-    if (startPage + pagesToShow <= lastPage) {
-      setStartPage(startPage + pagesToShow);
-      setActivedPage(startPage + pagesToShow);
-      refetch({ page: startPage + pagesToShow });
+    const page = startPage + pagesToShow;
+    if (page <= lastPage) {
+      setStartPage(page);
+      setActivedPage(page);
+      setPage(page);
+      refetch({
+        page,
+        category,
+        checkComplete,
+        searchTerm,
+      });
     }
   };
 

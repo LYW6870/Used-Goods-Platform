@@ -12,29 +12,28 @@ import {
 
 export default function BoardList() {
   // const router = useRouter();
+  // searchTerm이나 checkComplete같은것 굳이 props로 Pagination에 전달해야 하나?
+  // 일단 한다고 해도 작성 완료한다음에 따로 뺴자.
 
   const [category, setCategory] = useState('전체');
   const [checkComplete, setCheckComplete] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  let inputTerm = '';
   const [page, setPage] = useState(1);
 
   const { data, refetch } = useQuery<
     Pick<IQuery, 'fetchBoards'>,
     IQueryFetchBoardsArgs
-  >(FETCH_BOARDS, { variables: { page, category, checkComplete } });
+  >(FETCH_BOARDS, { variables: { page, category, checkComplete, searchTerm } });
 
   useEffect(() => {
-    refetch({ page, category, checkComplete });
-    console.log(page, category, checkComplete);
+    refetch({ page, category, checkComplete, searchTerm });
   }, [category, checkComplete]);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   const { data: dataBoardsCount } = useQuery<
     Pick<IQuery, 'fetchBoardsCount'>,
     IQueryFetchBoardsCountArgs
-  >(FETCH_BOARDS_COUNT, { variables: { category, checkComplete } });
+  >(FETCH_BOARDS_COUNT, { variables: { category, checkComplete, searchTerm } });
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);
@@ -42,10 +41,16 @@ export default function BoardList() {
 
   const handleChangeComplete = (event) => {
     setCheckComplete(event.target.checked);
-    console.log(event.target.checked);
   };
 
-  // 고민! 페이지네이션에 카테고리와 setPage useState를 전달해주어야 할지 아니면 쿠키에 넣고 불러올지...
+  const handleChangeSearch = (event) => {
+    inputTerm = event.target.value;
+  };
+
+  const onClickSearchButton = () => {
+    setSearchTerm(inputTerm);
+    refetch({ page, category, checkComplete, searchTerm: inputTerm });
+  };
 
   // const onClickMoveToBoardNew = () => {
   //   router.push('/boards/new');
@@ -63,8 +68,12 @@ export default function BoardList() {
         data={data}
         refetch={refetch}
         category={category}
+        searchTerm={searchTerm}
+        checkComplete={checkComplete}
         handleChangeCategory={handleChangeCategory}
         handleChangeComplete={handleChangeComplete}
+        handleChangeSearch={handleChangeSearch}
+        onClickSearchButton={onClickSearchButton}
         count={dataBoardsCount?.fetchBoardsCount}
         setPage={setPage}
       />

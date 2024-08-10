@@ -20,13 +20,15 @@ export default function BoardListUI({
   category,
   handleChangeCategory,
   handleChangeComplete,
+  handleChangeSearch,
+  onClickSearchButton,
+  searchTerm,
   refetch,
   count,
+  checkComplete,
   setPage,
 }: IBoardListUIProps) {
-  useEffect(() => {
-    console.log('발동');
-  }, [data, refetch]);
+  useEffect(() => {}, [data, refetch, searchTerm]);
   return (
     <S.Wrapper>
       <S.BodyContainer>
@@ -62,8 +64,19 @@ export default function BoardListUI({
             count={count}
             category={category}
             setPage={setPage}
+            searchTerm={searchTerm}
+            checkComplete={checkComplete}
           />
         </S.PaginationContainer>
+        <S.SearchContainer>
+          <S.SearchInput
+            onChange={handleChangeSearch}
+            placeholder="제목에서 검색할 단어를 입력하세요"
+          />
+          <S.SearchButton onClick={onClickSearchButton}>
+            검색
+          </S.SearchButton>
+        </S.SearchContainer>
       </S.BodyContainer>
     </S.Wrapper>
   );

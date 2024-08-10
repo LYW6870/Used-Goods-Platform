@@ -11,6 +11,8 @@ export interface IPaginationProps {
     variables: Partial<IQueryFetchBoardsArgs>,
   ) => Promise<ApolloQueryResult<Pick<IQuery, 'fetchBoards'>>>;
   category: string;
+  searchTerm: string;
+  checkComplete: boolean;
   setPage: (event) => void;
 }
 

@@ -14,8 +14,12 @@ export interface IBoardListUIProps {
   // onClickMoveToBoardNew: () => void;
   // onClickMoveToBoardDetail: (event: MouseEvent<HTMLDivElement>) => void;
   category: string;
+  searchTerm: string;
   count: number;
+  checkComplete: boolean;
   handleChangeCategory: (event) => void;
   handleChangeComplete: (event) => void;
+  handleChangeSearch: (event) => void;
+  onClickSearchButton: () => void;
   setPage: (event) => void;
 }

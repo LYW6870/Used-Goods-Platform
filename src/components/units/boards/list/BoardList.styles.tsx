@@ -38,12 +38,12 @@ export const Label = styled.label`
 
 export const TitleLabel = styled.label`
   font-size: 18px;
-  display: -webkit-box; /* 플렉스박스를 사용하여 컨테이너를 설정 */
-  -webkit-line-clamp: 2; /* 표시할 줄 수 설정 */
-  -webkit-box-orient: vertical; /* 세로 방향으로 정렬 */
-  overflow: hidden; /* 넘치는 텍스트를 숨김 */
-  text-overflow: ellipsis; /* 넘치는 텍스트를 말줄임표로 표시 */
-  max-width: 300px; /* 최대 너비 설정 */
+  display: -webkit-box; // 플렉스박스를 사용하여 컨테이너를 설정
+  -webkit-line-clamp: 2; // 표시할 줄 수 설정
+  -webkit-box-orient: vertical; // 세로 방향으로 정렬
+  overflow: hidden; // 넘치는 텍스트를 숨김
+  text-overflow: ellipsis; // 넘치는 텍스트를 말줄임표로 표시
+  max-width: 300px; // 최대 너비 설정
 `;
 
 export const CategorySelect = styled.select`
@@ -107,30 +107,36 @@ export const PaginationContainer = styled.div`
   justify-content: center;
 `;
 
-// export const Row = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   height: 52px;
-//   line-height: 52px;
-//   border-bottom: 1px solid gray;
+export const SearchContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  padding-right: 13px;
+`;
 
-//   :hover {
-//     color: blue;
-//   }
-// `;
+export const SearchInput = styled.input`
+  width: 260px;
+  height: 30px;
+  padding-left: 5px;
+  border-radius: 4px;
+  font-size: 15px;
+`;
 
-// export const Button = styled.button`
-//   padding: 10px 20px;
-//   color: white;
-//   background-color: #007bff;
-//   border: none;
-//   border-radius: 4px;
-//   /* text-align: center; */
-//   cursor: pointer;
+export const SearchButton = styled.button`
+  height: 30px;
+  width: 50px;
+  padding: 5px 10px;
+  margin-left: 5px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  /* text-align: center; */
+  cursor: pointer;
 
-//   &:hover {
-//     background-color: #0056b3;
-//   }
-// `;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 
 // export const Error = styled(Modal)``;

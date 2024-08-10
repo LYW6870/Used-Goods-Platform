@@ -125,12 +125,14 @@ export type IQueryFetchBoardsArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
   checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
   checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 
