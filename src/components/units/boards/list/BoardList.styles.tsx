@@ -17,8 +17,7 @@ export const BodyContainer = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 25px;
-  border: 1px solid #9d2b2b;
-  /* border: 1px solid #ece8e8; */
+  border: 1px solid #ece8e8;
   border-radius: 8px;
 `;
 
@@ -67,21 +66,21 @@ export const ListContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
 `;
 
 export const BoardItem = styled.div`
   display: flex;
   flex-direction: row;
-  width: 300px;
-  height: 150px;
+  width: 25%;
+  height: 200px;
   padding: 10px;
 `;
 
 export const BoardImage = styled.img`
   width: 50%;
   height: 100%;
-  src: '../../../../../../public/ImageNone.png';
+  border: 1px solid black;
   /* object-fit: scale-down; */
 `;
 
@@ -102,23 +101,11 @@ export const BoardInfo = styled.div`
   }
 `;
 
-// export const TableContainer = styled.div`
-//   width: 100%;
-//   max-width: 1200px; // 최대 너비 제한
-//   margin: 50px auto;
-//   padding: 20px;
-//   border: 1px solid #ccc;
-//   border-radius: 8px;
-// `;
-
-// export const TableTop = styled.div`
-//   border-top: 2px solid gray;
-//   margin-top: 20px;
-// `;
-
-// export const TableBottom = styled.div`
-//   border-bottom: 2px solid gray;
-// `;
+export const PaginationContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
 
 // export const Row = styled.div`
 //   display: flex;
@@ -130,92 +117,6 @@ export const BoardInfo = styled.div`
 //   :hover {
 //     color: blue;
 //   }
-// `;
-
-// export const ColumnHeaderId = styled.div`
-//   width: 5%;
-//   text-align: center;
-// `;
-
-// export const ColumnId = styled.div`
-//   width: 5%;
-//   text-align: center;
-// `;
-
-// export const ColumnHeaderCategory = styled.div`
-//   width: 15%;
-//   text-align: center;
-// `;
-
-// export const ColumnCategory = styled.div`
-//   width: 15%;
-//   padding-left: 30px;
-// `;
-
-// export const ColumnHeaderIsComplete = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnIsComplete = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnHeaderSaleType = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnSaleType = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnHeaderTitle = styled.div`
-//   width: 32%;
-//   padding-left: 80px;
-//   cursor: pointer;
-
-//   :hover {
-//     color: blue;
-//   }
-// `;
-
-// export const ColumnTitle = styled.div`
-//   width: 32%;
-//   padding-left: 40px;
-// `;
-
-// export const ColumnHeaderPrice = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnPrice = styled.div`
-//   width: 10%;
-//   text-align: center;
-// `;
-
-// export const ColumnHeaderDate = styled.div`
-//   width: 20%;
-//   text-align: center;
-// `;
-
-// export const ColumnDate = styled.div`
-//   width: 20%;
-//   text-align: center;
-// `;
-
-// export const FormField = styled.div`
-//   margin-bottom: 20px;
-// `;
-
-// export const ButtonContainer = styled.div`
-//   margin: 10px 50px;
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: flex-end;
 // `;
 
 // export const Button = styled.button`
@@ -230,12 +131,6 @@ export const BoardInfo = styled.div`
 //   &:hover {
 //     background-color: #0056b3;
 //   }
-// `;
-
-// export const PaginationContainer = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: center;
 // `;
 
 // export const Error = styled(Modal)``;

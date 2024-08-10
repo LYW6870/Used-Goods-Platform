@@ -8,11 +8,12 @@ export default function PaginationUI({
   startPage,
   lastPage,
   activedPage,
+  pagesToShow,
 }: IPaginationUIProps): JSX.Element {
   return (
     <div>
       <Page onClick={onClickPrevPage}>{`<`}</Page>
-      {new Array(10).fill(1).map(
+      {new Array(pagesToShow).fill(1).map(
         (_, index) =>
           startPage + index <= lastPage && (
             <Page

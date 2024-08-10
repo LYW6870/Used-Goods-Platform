@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { MouseEvent } from 'react';
 import PaginationUI from './Pagination.presenter';
 import type { IPaginationProps } from './Pagination.types';
@@ -6,29 +6,41 @@ import type { IPaginationProps } from './Pagination.types';
 export default function Pagination({
   count,
   refetch,
+  category,
+  setPage,
 }: IPaginationProps): JSX.Element {
   const [startPage, setStartPage] = useState(1);
   const [activedPage, setActivedPage] = useState(1);
-  const lastPage = Math.ceil((count ?? 10) / 10);
+  const itemsPerPage = 8;
+  const pagesToShow = 5;
+  const lastPage = Math.ceil((count ?? itemsPerPage) / itemsPerPage);
+
+  useEffect(() => {
+    if (activedPage > lastPage) {
+      setPage(1);
+      setActivedPage(1);
+    }
+  }, [category]);
 
   const onClickPage = (event: MouseEvent<HTMLSpanElement>): void => {
     const page = Number(event.currentTarget.id);
-    setActivedPage(Number(event.currentTarget.id));
-    refetch({ page });
+    setActivedPage(page);
+    setPage(page);
+    refetch({ page, category });
   };
 
   const onClickPrevPage = (): void => {
     if (startPage === 1) return;
-    setStartPage(startPage - 10);
-    setActivedPage(startPage - 10);
-    refetch({ page: startPage - 10 });
+    setStartPage(startPage - pagesToShow);
+    setActivedPage(startPage - pagesToShow);
+    refetch({ page: startPage - pagesToShow });
   };
 
   const onClickNextPage = (): void => {
-    if (startPage + 10 <= lastPage) {
-      setStartPage(startPage + 10);
-      setActivedPage(startPage + 10);
-      refetch({ page: startPage + 10 });
+    if (startPage + pagesToShow <= lastPage) {
+      setStartPage(startPage + pagesToShow);
+      setActivedPage(startPage + pagesToShow);
+      refetch({ page: startPage + pagesToShow });
     }
   };
 
@@ -36,6 +48,7 @@ export default function Pagination({
     <PaginationUI
       startPage={startPage}
       lastPage={lastPage}
+      pagesToShow={pagesToShow}
       activedPage={activedPage}
       onClickPage={onClickPage}
       onClickPrevPage={onClickPrevPage}

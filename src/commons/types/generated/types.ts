@@ -130,6 +130,7 @@ export type IQueryFetchBoardsArgs = {
 
 export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
+  checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 

@@ -1,22 +1,21 @@
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 // import { MouseEvent } from 'react';
-import { FETCH_BOARDS } from './BoardList.queries';
+import { FETCH_BOARDS, FETCH_BOARDS_COUNT } from './BoardList.queries';
 import BoardListUI from './BoardList.presenter';
 import {
   IQuery,
   IQueryFetchBoardsArgs,
-  // IQueryFetchBoardsCountArgs,
+  IQueryFetchBoardsCountArgs,
 } from '../../../../commons/types/generated/types';
 
 export default function BoardList() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const [category, setCategory] = useState('디지털기기');
+  const [category, setCategory] = useState('전체');
   const [checkComplete, setCheckComplete] = useState(false);
-  //
-  const page = 1;
+  const [page, setPage] = useState(1);
 
   const { data, refetch } = useQuery<
     Pick<IQuery, 'fetchBoards'>,
@@ -32,10 +31,10 @@ export default function BoardList() {
     console.log(data);
   }, [data]);
 
-  // const { data: dataBoardsCount } = useQuery<
-  //   Pick<IQuery, 'fetchBoardsCount'>,
-  //   IQueryFetchBoardsCountArgs
-  // >(FETCH_BOARDS_COUNT, { variables: { category: '전체' } });
+  const { data: dataBoardsCount } = useQuery<
+    Pick<IQuery, 'fetchBoardsCount'>,
+    IQueryFetchBoardsCountArgs
+  >(FETCH_BOARDS_COUNT, { variables: { category, checkComplete } });
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);
@@ -46,9 +45,11 @@ export default function BoardList() {
     console.log(event.target.checked);
   };
 
-  const onClickMoveToBoardNew = () => {
-    router.push('/boards/new');
-  };
+  // 고민! 페이지네이션에 카테고리와 setPage useState를 전달해주어야 할지 아니면 쿠키에 넣고 불러올지...
+
+  // const onClickMoveToBoardNew = () => {
+  //   router.push('/boards/new');
+  // };
 
   // const onClickMoveToBoardDetail = (
   //   event: MouseEvent<HTMLDivElement>,
@@ -64,6 +65,8 @@ export default function BoardList() {
         category={category}
         handleChangeCategory={handleChangeCategory}
         handleChangeComplete={handleChangeComplete}
+        count={dataBoardsCount?.fetchBoardsCount}
+        setPage={setPage}
       />
     </>
   );

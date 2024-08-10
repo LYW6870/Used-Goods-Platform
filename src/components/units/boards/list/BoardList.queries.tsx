@@ -17,7 +17,7 @@ export const FETCH_BOARDS = gql`
 `;
 
 export const FETCH_BOARDS_COUNT = gql`
-  query fetchBoardsCount($category: String) {
-    fetchBoardsCount(category: $category)
+  query fetchBoardsCount($category: String, $checkComplete: Boolean) {
+    fetchBoardsCount(category: $category, checkComplete: $checkComplete)
   }
 `;
