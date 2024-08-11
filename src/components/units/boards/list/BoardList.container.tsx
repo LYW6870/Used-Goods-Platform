@@ -1,25 +1,25 @@
 import { useQuery } from '@apollo/client';
-// import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-// import { MouseEvent } from 'react';
+import { useRouter } from 'next/router';
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
+import { Modal } from 'antd';
 import { FETCH_BOARDS, FETCH_BOARDS_COUNT } from './BoardList.queries';
 import BoardListUI from './BoardList.presenter';
+
 import {
   IQuery,
   IQueryFetchBoardsArgs,
   IQueryFetchBoardsCountArgs,
 } from '../../../../commons/types/generated/types';
+import removeSpecialChars from '../../../../commons/libraries/utils/removeSpecialChars';
 
 export default function BoardList() {
-  // const router = useRouter();
-  // searchTerm이나 checkComplete같은것 굳이 props로 Pagination에 전달해야 하나?
-  // 일단 한다고 해도 작성 완료한다음에 따로 뺴자.
+  const router = useRouter();
 
   const [category, setCategory] = useState('전체');
   const [checkComplete, setCheckComplete] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  let inputTerm = '';
   const [page, setPage] = useState(1);
+  const inputTerm = useRef<string>('');
 
   const { data, refetch } = useQuery<
     Pick<IQuery, 'fetchBoards'>,
@@ -35,32 +35,35 @@ export default function BoardList() {
     IQueryFetchBoardsCountArgs
   >(FETCH_BOARDS_COUNT, { variables: { category, checkComplete, searchTerm } });
 
-  const handleChangeCategory = (event) => {
+  const handleChangeCategory = (event: ChangeEvent<HTMLSelectElement>) => {
     setCategory(event.target.value);
   };
 
-  const handleChangeComplete = (event) => {
+  const handleChangeComplete = (event: ChangeEvent<HTMLInputElement>) => {
     setCheckComplete(event.target.checked);
   };
 
-  const handleChangeSearch = (event) => {
-    inputTerm = event.target.value;
+  const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    inputTerm.current = event.target.value;
   };
 
   const onClickSearchButton = () => {
-    setSearchTerm(inputTerm);
-    refetch({ page, category, checkComplete, searchTerm: inputTerm });
+    const cleanString = removeSpecialChars(inputTerm.current);
+    if (cleanString === '') {
+      Modal.error({ content: '검색어를 입력해주세요' });
+      return;
+    }
+    setSearchTerm(cleanString);
+    refetch({ page, category, checkComplete, searchTerm: cleanString });
   };
 
-  // const onClickMoveToBoardNew = () => {
-  //   router.push('/boards/new');
-  // };
+  const onClickWriteButton = () => {
+    router.push('/boards/new');
+  };
 
-  // const onClickMoveToBoardDetail = (
-  //   event: MouseEvent<HTMLDivElement>,
-  // ): void => {
-  //   router.push(`/boards/${event.currentTarget.id}`);
-  // };
+  const onClickBoardItem = (event: MouseEvent<HTMLDivElement>): void => {
+    router.push(`/boards/${event.currentTarget.id}`);
+  };
 
   return (
     <>
@@ -74,12 +77,11 @@ export default function BoardList() {
         handleChangeComplete={handleChangeComplete}
         handleChangeSearch={handleChangeSearch}
         onClickSearchButton={onClickSearchButton}
+        onClickWriteButton={onClickWriteButton}
+        onClickBoardItem={onClickBoardItem}
         count={dataBoardsCount?.fetchBoardsCount}
         setPage={setPage}
       />
     </>
   );
 }
-// count={dataBoardsCount?.fetchBoardsCount}
-// onClickMoveToBoardNew={onClickMoveToBoardNew}
-// onClickMoveToBoardDetail={onClickMoveToBoardDetail}

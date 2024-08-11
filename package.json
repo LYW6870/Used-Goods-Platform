@@ -36,6 +36,7 @@
     "react-hook-form": "^7.52.1",
     "react-quill": "^2.0.0",
     "recoil": "^0.7.7",
+    "string-sanitizer": "^2.0.2",
     "ts-node": "^10.9.2",
     "yup": "^1.4.0"
   },
