@@ -5,6 +5,10 @@ import { useEffect } from 'react';
 export const useAuth = (): void => {
   const router = useRouter();
 
+  // 로그인 후 이용 가능한 페이지
+  // 로그인 후, 권한이 필요한 페이지
+  // 관리자만 입장 가능한 페이지
+
   useEffect(() => {
     if (localStorage.getItem('accessToken') === null) {
       alert('로그인후 이용 가능한 페이지입니다.');
