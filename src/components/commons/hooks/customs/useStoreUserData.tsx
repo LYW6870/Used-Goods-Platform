@@ -1,7 +1,76 @@
-// 0. Access Token 존재여부 체크
-// 1. 로그인 여부 확인 (여기서 로그인 여부 확인이란 정보를 가져오는데 성공해서(아래 코드들이 한번 실행된 적 있어서)
-// 로그인 여부 변수가 true인지, 가져온 유저 데이터가 존재하는지 확인하는것.)
-// (로그인 여부 변수만 확인할게 아니라 엑세스 토큰으로 존재하고 있는 유저 데이터도 다른게 없는지 확인... 하는건 생략해도 될 듯?)
-// 2. 로그인이 되어있지 않은 경우 엑세스 토큰을 사용하여 내 백엔드 서버에 API 요청을 보내고, 유저 데이터를 받아오기.
-// 3. 정상적으로 정보를 받아오는것에 성공했을 경우, isUserSignedIn 를 true로 변경, 유저 데이터 local Storage에 저장.
-// 동작 완료
+import { useRecoilState } from 'recoil';
+import { gql, useQuery } from '@apollo/client';
+import { Modal } from 'antd';
+import { isUserSignedInState } from '../../../../commons/globalState/index';
+import {
+  IQuery,
+  IQueryFetchUserDataArgs,
+  IUserData,
+} from '../../../../commons/types/generated/types';
+
+const FETCH_USER_DATA = gql`
+  query fetchUserData($accessToken: String!) {
+    fetchUserData(accessToken: $accessToken) {
+      id
+      name
+      provider
+    }
+  }
+`;
+
+// 유저 정보 가져오는 Custom Hook
+export default function useStoreUserData(): IUserData | null {
+  // eslint-disable-next-line
+  const [isUserSignedIn, setIsUserSignedIn] =
+    useRecoilState(isUserSignedInState);
+  let returnUserData = null;
+  let token;
+
+  console.log('위치: useStoreUserData / isUserSignedIn의 값: ', isUserSignedIn);
+
+  // 엑세스 코드 획득
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('accessToken');
+  }
+
+  // 유저 정보 불러오기
+  const { data: queryData } = useQuery<
+    Pick<IQuery, 'fetchUserData'>,
+    IQueryFetchUserDataArgs
+  >(FETCH_USER_DATA, {
+    variables: { accessToken: token },
+  });
+
+  // 로그인이 되어있지 않거나 엑세스 토큰이 없으면
+  if (!isUserSignedIn || !token) {
+    return returnUserData;
+  }
+
+  console.log('위치: useStoreUserData / 로그인 체크 변수 true로 통과 ');
+
+  if (typeof window !== 'undefined') {
+    // 저장되어 있는 유저 정보가 없으면 불러온 유저 정보 local Storage에 저장
+    if (!localStorage.getItem('userData')) {
+      token = localStorage.getItem('accessToken');
+
+      // 백엔드로 부터 가져온 유저 데이터가 비어있지 않으면
+      if (queryData !== undefined && queryData !== null) {
+        const userData = JSON.stringify(queryData?.fetchUserData);
+
+        localStorage.setItem('userData', userData);
+      } else {
+        Modal.error({ content: '유저 정보에 오류가 있습니다' });
+        window.location.reload();
+      }
+    }
+
+    // 유저데이터 가져오기
+    const storedUserData = localStorage.getItem('userData');
+
+    // 가져온 유저데이터를 다시 객체로 변환하여 저장
+    if (storedUserData) {
+      returnUserData = JSON.parse(storedUserData);
+    }
+  }
+  return returnUserData;
+}

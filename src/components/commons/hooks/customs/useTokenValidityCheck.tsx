@@ -1,6 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import { Modal } from 'antd';
+import { useRecoilState } from 'recoil';
+import { isUserSignedInState } from '../../../../commons/globalState/index';
 
 // 로컬 스토리지에 있는 카카오 Access Token이 유효한지 확인하는 코드
 // Access Token이 없으면 아무 동작 하지않고 return 한다.
@@ -14,8 +16,13 @@ const KAKAO_TOKEN_CHECK = gql`
 
 export default function useTokenValidityCheck() {
   const [kakaoTokenCheck] = useMutation(KAKAO_TOKEN_CHECK);
+  const [isUserSignedIn, setIsUserSignedIn] =
+    useRecoilState(isUserSignedInState);
 
-  console.log('임시 / 순서체크 / 토큰 유효성체크 / 원하는 순서 1번');
+  console.log(
+    '임시 / 순서체크 / 토큰 유효성체크 / 원하는 순서 1번 / isUserSignedIn값: ',
+    isUserSignedIn,
+  );
 
   useEffect(() => {
     const TokenValidityCheck = async () => {
@@ -23,6 +30,8 @@ export default function useTokenValidityCheck() {
         const accessToken = localStorage.getItem('accessToken');
 
         if (!accessToken) {
+          setIsUserSignedIn(false);
+          localStorage.removeItem('userData');
           return;
         }
 
@@ -33,8 +42,11 @@ export default function useTokenValidityCheck() {
 
           if (response.data.kakaoTokenCheck === false) {
             localStorage.removeItem('accessToken');
+            localStorage.removeItem('userData');
             window.location.reload();
           }
+
+          setIsUserSignedIn(true);
         } catch (error) {
           Modal.error({ content: '토큰 검증 오류' });
         }
