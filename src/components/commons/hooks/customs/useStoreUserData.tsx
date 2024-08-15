@@ -73,4 +73,5 @@ export default function useStoreUserData(): IUserData | null {
     }
   }
   return returnUserData;
+  //
 }
