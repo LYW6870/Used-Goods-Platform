@@ -26,7 +26,7 @@ const KAKAO_LOGIN = gql`
 
 export default function KakaoCallback() {
   const router = useRouter();
-  const { onClickMoveToPage, visitedPage } = useMoveToPage();
+  // const { onClickMoveToPage, visitedPage } = useMoveToPage();
   const { code } = router.query;
   const [login, { data, loading, error }] = useMutation(KAKAO_LOGIN);
 
@@ -43,12 +43,14 @@ export default function KakaoCallback() {
         'accessToken',
         data.kakaoLogin.socialAccount.accessToken,
       );
-      if (visitedPage) {
-        onClickMoveToPage(visitedPage); // 미작동
-      } else {
-        onClickMoveToPage('/boards'); // 미작동
-      }
-      window.history.go(-2); // 다른걸로 대체하기
+      router.push('http://localhost:3000/boards');
+
+      // if (visitedPage) {
+      //   onClickMoveToPage(visitedPage); // 미작동
+      // } else {
+      //   onClickMoveToPage('/boards'); // 미작동
+      // }
+      // window.history.go(-2); // 다른걸로 대체하기
     }
   }, [data]);
 

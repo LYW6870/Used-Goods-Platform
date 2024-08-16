@@ -4,7 +4,6 @@ import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
 import { FETCH_BOARDS, FETCH_BOARDS_COUNT } from './BoardList.queries';
 import BoardListUI from './BoardList.presenter';
-
 import {
   IQuery,
   IQueryFetchBoardsArgs,
