@@ -26,8 +26,6 @@ export default function useStoreUserData(): IUserData | null {
   let returnUserData = null;
   let token;
 
-  console.log('위치: useStoreUserData / isUserSignedIn의 값: ', isUserSignedIn);
-
   // 엑세스 코드 획득
   if (typeof window !== 'undefined') {
     token = localStorage.getItem('accessToken');
@@ -45,8 +43,6 @@ export default function useStoreUserData(): IUserData | null {
   if (!isUserSignedIn || !token) {
     return returnUserData;
   }
-
-  console.log('위치: useStoreUserData / 로그인 체크 변수 true로 통과 ');
 
   if (typeof window !== 'undefined') {
     // 저장되어 있는 유저 정보가 없으면 불러온 유저 정보 local Storage에 저장

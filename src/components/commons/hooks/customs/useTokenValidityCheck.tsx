@@ -22,11 +22,6 @@ export default function useTokenValidityCheck() {
 
   const router = useRouter(); //
 
-  console.log(
-    '임시 / 순서체크 / 토큰 유효성체크 / 원하는 순서 1번 / isUserSignedIn값: ',
-    isUserSignedIn,
-  );
-
   useEffect(() => {
     const TokenValidityCheck = async () => {
       if (typeof window !== 'undefined') {

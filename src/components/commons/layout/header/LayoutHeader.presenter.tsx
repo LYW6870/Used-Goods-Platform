@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
 import * as S from './LayoutHeader.styles';
 import { ILayoutHeaderUIProps } from './LayoutHeader.types';
 
 export default function LayoutHeaderUI({
   isUserSignedIn,
+  UserData,
   onClickLogout,
   onClickLogin,
   onClickUserInfo,
@@ -18,7 +18,7 @@ export default function LayoutHeaderUI({
           {isUserSignedIn ? (
             <S.InfoContainer>
               <S.ItemContainer>
-                <S.Label>UserName님 방문을 환영합니다</S.Label>
+                <S.Label>{UserData?.name}님 방문을 환영합니다</S.Label>
               </S.ItemContainer>
               <S.ItemContainer>
                 <S.Label onClick={onClickUserInfo}>내 정보 확인</S.Label>
