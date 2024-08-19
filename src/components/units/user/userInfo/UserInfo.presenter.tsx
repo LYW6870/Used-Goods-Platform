@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { IUserInfoUIProps } from './UserInfo.types';
 
-export default function UserInfoUI(): JSX.Element {
+export default function UserInfoUI({
+  userData,
+}: IUserInfoUIProps): JSX.Element {
   return (
     <>
-      <div>UserInfoPresenter</div>
+      <div>UserInfoPage</div>
+      <div>{userData?.name}</div>
     </>
   );
 }

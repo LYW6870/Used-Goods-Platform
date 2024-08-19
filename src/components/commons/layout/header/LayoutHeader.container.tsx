@@ -1,11 +1,17 @@
 import { Modal } from 'antd';
 import { useRouter } from 'next/router';
+import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
 import { isUserSignedInState } from '../../../../commons/globalState/index';
 import useTokenValidityCheck from '../../hooks/customs/useTokenValidityCheck';
 import useStoreUserData from '../../hooks/customs/useStoreUserData';
 import LayoutHeaderUI from './LayoutHeader.presenter';
-import { IUserData } from '../../../../commons/types/generated/types';
+import {
+  IMutation,
+  IMutationLogoutUserArgs,
+  IUserData,
+} from '../../../../commons/types/generated/types';
+import { LOGOUT_USER } from './LayoutHeader.queries';
 
 // LayoutHeader에 알림을 넣을까? 새로운 채팅존재알림이라든지.. 근데 기능 추가 구현해야할듯.
 
@@ -18,6 +24,8 @@ export default function LayoutHeader(): JSX.Element {
     useRecoilState(isUserSignedInState);
   const router = useRouter();
 
+  let accessToken;
+
   if (
     typeof window !== 'undefined' &&
     UserData === null &&
@@ -26,18 +34,42 @@ export default function LayoutHeader(): JSX.Element {
     Modal.error({ content: '유저 정보 로딩 에러 발생' });
   }
 
+  const [logoutUser] = useMutation<
+    Pick<IMutation, 'logoutUser'>,
+    IMutationLogoutUserArgs
+  >(LOGOUT_USER);
+
   const onClickLogin = () => {
     router.push('/auth/login');
   };
 
-  const onClickLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
-    setIsUserSignedIn(false);
+  const onClickLogout = async () => {
+    // 토큰 가져오기
+    if (typeof window !== 'undefined') {
+      accessToken = localStorage.getItem('accessToken');
+      if (accessToken === null) {
+        Modal.error({ content: '유저 정보 로딩 에러 발생' });
+        window.location.reload(); // 새로고침
+      }
+    }
 
-    Modal.confirm({
-      content: '로그아웃이 완료되었습니다.',
-    });
+    // 로그아웃 API 실행
+    try {
+      await logoutUser({
+        variables: {
+          accessToken,
+          id: UserData?.id,
+        },
+      });
+
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userData');
+      setIsUserSignedIn(false);
+
+      Modal.success({ content: '로그아웃이 완료되었습니다.' });
+    } catch (error) {
+      Modal.error({ content: error.message });
+    }
   };
 
   const onClickUserInfo = () => {
