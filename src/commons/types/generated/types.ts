@@ -113,6 +113,7 @@ export type IQuery = {
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
   fetchUserData?: Maybe<IUserData>;
+  fetchUserInfoData?: Maybe<IUserInfoData>;
 };
 
 
@@ -137,6 +138,11 @@ export type IQueryFetchBoardsCountArgs = {
 
 
 export type IQueryFetchUserDataArgs = {
+  accessToken: Scalars['String']['input'];
+};
+
+
+export type IQueryFetchUserInfoDataArgs = {
   accessToken: Scalars['String']['input'];
 };
 
@@ -182,6 +188,18 @@ export type IUser = {
 
 export type IUserData = {
   __typename?: 'UserData';
+  address?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  provider?: Maybe<Scalars['String']['output']>;
+  rating: Scalars['Int']['output'];
+  socialAccount: ISocialAccount;
+  updatedAt: Scalars['String']['output'];
+};
+
+export type IUserInfoData = {
+  __typename?: 'UserInfoData';
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
