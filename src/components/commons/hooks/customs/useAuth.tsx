@@ -1,3 +1,4 @@
+import { Modal } from 'antd';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -11,7 +12,7 @@ export const useAuth = (): void => {
 
   useEffect(() => {
     if (localStorage.getItem('accessToken') === null) {
-      alert('로그인후 이용 가능한 페이지입니다.');
+      Modal.error({ content: '로그인후 이용 가능한 페이지입니다.' });
       router.push('../../../../../auth/login');
     }
   }, []);

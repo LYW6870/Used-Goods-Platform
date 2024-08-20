@@ -34,12 +34,13 @@ export default function UserInfo(): JSX.Element {
 
   console.log(data);
   console.log(data?.fetchUserInfoData);
+  // 유저 정보 정상적으로 가져왔으면 이제 띄우기만 하면 됨.
+
+  // 유저 정보 수정 API 작성
 
   return (
-    // fetchUserInfo API 구현하려고 생각해 보니까 fetchUserData API로도 되잖아..?
-    // => 아냐, 간략정보와 상세정보 다르게 해야할듯. 거기다 여기 페이지에서는 수정 기능도 넣어야하고.
-
     // 현재진행: fetchUserInfo API를 작성하라.
     <>{data && <UserInfoUI userData={data.fetchUserInfoData} />}</>
+    // <>{data && <UserInfoUI userData={data.fetchUserInfoData} />}</>
   );
 }

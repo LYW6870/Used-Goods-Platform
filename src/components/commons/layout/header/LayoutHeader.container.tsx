@@ -67,6 +67,7 @@ export default function LayoutHeader(): JSX.Element {
       setIsUserSignedIn(false);
 
       Modal.success({ content: '로그아웃이 완료되었습니다.' });
+      window.location.reload(); // 새로고침
     } catch (error) {
       Modal.error({ content: error.message });
     }
