@@ -13,18 +13,14 @@ export const FETCH_USER_INFO_DATA = gql`
   }
 `;
 
-// export const UPDATE_BOARD = gql`
-//   mutation updateBoard(
-//     $boardId: Int!
-//     $userId: Int!
-//     $updateBoardInput: UpdateBoardInput!
-//   ) {
-//     updateBoard(
-//       boardId: $boardId
-//       userId: $userId
-//       updateBoardInput: $updateBoardInput
-//     ) {
-//       id
-//     }
-//   }
-// `;
+export const UPDATE_USER_DATA = gql`
+  mutation updateUserData(
+    $updateUserDataInput: UpdateUserDataInput!
+    $accessToken: String!
+  ) {
+    updateUserData(
+      updateUserDataInput: $updateUserDataInput
+      accessToken: $accessToken
+    )
+  }
+`;

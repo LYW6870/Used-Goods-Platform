@@ -3,7 +3,7 @@ import UserInfo from '../../../src/components/units/user/userInfo/UserInfo.conta
 
 export default function UserInfoPage() {
   useAuth();
-  const isEdit = false; // 테스트를 위해 임시로 true
+  const isEdit = true;
   return (
     <>
       <UserInfo isEdit={isEdit} />

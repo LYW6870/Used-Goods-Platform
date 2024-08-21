@@ -60,6 +60,7 @@ export type IMutation = {
   testAPIcreateUser?: Maybe<Scalars['Int']['output']>;
   updateBoard?: Maybe<IBoard>;
   updateIsComplete?: Maybe<Scalars['Boolean']['output']>;
+  updateUserData?: Maybe<Scalars['Boolean']['output']>;
 };
 
 
@@ -105,6 +106,12 @@ export type IMutationUpdateBoardArgs = {
 export type IMutationUpdateIsCompleteArgs = {
   boardId: Scalars['Int']['input'];
   userId: Scalars['Int']['input'];
+};
+
+
+export type IMutationUpdateUserDataArgs = {
+  accessToken: Scalars['String']['input'];
+  updateUserDataInput?: InputMaybe<IUpdateUserDataInput>;
 };
 
 export type IQuery = {
@@ -173,6 +180,10 @@ export type IUpdateBoardInput = {
   isComplete?: InputMaybe<Scalars['Boolean']['input']>;
   price?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type IUpdateUserDataInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type IUser = {

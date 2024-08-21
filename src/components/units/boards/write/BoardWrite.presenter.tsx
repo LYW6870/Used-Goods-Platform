@@ -125,7 +125,7 @@ export default function BoardWriteUI({
               type="text"
               placeholder="상세주소 입력"
               readOnly={!addDetailOn}
-              maxLength={80}
+              maxLength={60}
               {...register('addressDetail')}
             />
           </S.FormField>

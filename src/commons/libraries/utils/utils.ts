@@ -23,7 +23,7 @@ export function getDate(inputTimestamp: any) {
 }
 
 export const getDate2 = (date: any) => {
-  // 구버전
+  // 구버전 아마 앞으로 안쓸듯
   const dddd = new Date(date);
   const yyyy = dddd.getFullYear();
   const mm = String(dddd.getMonth() + 1).padStart(2, '0'); // "달"만 0부터 시작 "년"이나 "일"은 1부터 시작

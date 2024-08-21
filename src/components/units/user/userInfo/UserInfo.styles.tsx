@@ -59,13 +59,25 @@ export const Table = styled.table`
   }
 `;
 
+export const InputEdit = styled.input`
+  font-size: 16px;
+  color: blue;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ededed;
+  text-align: left;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 // 버튼 래퍼 스타일
 export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-start; // 버튼을 왼쪽 정렬로 설정
-  gap: 10px;
   margin-top: 20px;
-  padding-left: 15px; // 버튼이 테이블과 정렬되도록 약간의 패딩 추가
 `;
 
 // 버튼 스타일
@@ -75,6 +87,7 @@ export const Button = styled.button`
   color: white;
   border: 1px solid #007bff;
   border-radius: 4px;
+  margin-right: 10px;
   cursor: pointer;
 
   &:hover {
