@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Modal } from 'antd';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -37,6 +38,7 @@ export const Table = styled.table`
 
   th,
   td {
+    margin: 0px;
     padding: 15px 20px;
     border-bottom: 1px solid #ffffff;
     text-align: left;
@@ -51,6 +53,14 @@ export const Table = styled.table`
 
   td {
     background-color: #ededed;
+  }
+
+  #address {
+    display: flex;
+    padding: 16px 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   tr:last-child th,
@@ -95,3 +105,11 @@ export const Button = styled.button`
     border-color: #0056b3;
   }
 `;
+
+export const AddBtn = styled.button`
+  margin: 0px;
+  padding: 0px;
+  width: 70px;
+`;
+
+export const AddressModal = styled(Modal)``;

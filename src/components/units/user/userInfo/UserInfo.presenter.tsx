@@ -1,3 +1,4 @@
+import DaumPostcodeEmbed from 'react-daum-postcode';
 import { IUserInfoUIProps } from './UserInfo.types';
 import { getDate } from '../../../../commons/libraries/utils/utils';
 import * as S from './UserInfo.styles';
@@ -5,10 +6,13 @@ import * as S from './UserInfo.styles';
 export default function UserInfoUI({
   userData,
   isEdit,
+  isToggleModal,
   formData,
   handleInputChange,
   onClickMoveToPage,
   onClickUpdateUserData,
+  onClickAddressComplete,
+  onToggleModal,
 }: IUserInfoUIProps): JSX.Element {
   return (
     <>
@@ -33,6 +37,29 @@ export default function UserInfoUI({
                 <th>주소</th>
                 {/* boardWrite처럼 daum post 이용해서 입력받자 상세주소까지는 말고 중간주소까지만 */}
                 {isEdit ? (
+                  <td id="address">
+                    <S.InputEdit
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      maxLength={60}
+                      spellCheck={false}
+                      // readOnly
+                    />
+                    <S.AddBtn onClick={onToggleModal}>주소 수정</S.AddBtn>
+                  </td>
+                ) : (
+                  <td>{userData.address}</td>
+                )}
+              </tr>
+              <tr>
+                <th>계정 생성일자</th>
+                <td>{getDate(userData?.createdAt)}</td>
+              </tr>
+              {/* <tr>
+                <th>주소</th>
+                {isEdit ? (
                   <td>
                     <S.InputEdit
                       type="text"
@@ -45,27 +72,6 @@ export default function UserInfoUI({
                   </td>
                 ) : (
                   <td>{userData.address}</td>
-                )}
-              </tr>
-              <tr>
-                <th>계정 생성일자</th>
-                <td>{getDate(userData?.createdAt)}</td>
-              </tr>
-              {/* <tr>
-                <th>테스트데이터</th>
-                {isEdit ? (
-                  <td>
-                    <S.InputEdit
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      maxLength={60}
-                      spellCheck={false}
-                    />
-                  </td>
-                ) : (
-                  <td>{userData.name}</td>
                 )}
               </tr> */}
               {/* 추가적인 항목들을 여기에 포함 */}
@@ -85,6 +91,11 @@ export default function UserInfoUI({
             </S.Button>
           </S.ButtonWrapper>
         </S.BodyContainer>
+        {isToggleModal && (
+          <S.AddressModal open onOk={onToggleModal} onCancel={onToggleModal}>
+            <DaumPostcodeEmbed onComplete={onClickAddressComplete} />
+          </S.AddressModal>
+        )}
       </S.Wrapper>
     </>
   );

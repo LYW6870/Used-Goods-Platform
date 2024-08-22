@@ -7,10 +7,13 @@ export interface IUserInfoProps {
 export interface IUserInfoUIProps {
   userData: IUserInfoData | null;
   isEdit: boolean;
+  isToggleModal: boolean;
   formData: UserDataUpdatable;
   onClickMoveToPage: () => void;
   onClickUpdateUserData: () => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClickAddressComplete: (data: any) => void;
+  onToggleModal: () => void;
 }
 
 // UserInfoContainer의 userDataUpdatableFields 와 같이 변경해야 함.

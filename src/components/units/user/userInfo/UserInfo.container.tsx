@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import type { Address } from 'react-daum-postcode';
 import {
   IMutation,
   IMutationUpdateUserDataArgs,
@@ -17,6 +18,8 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
   // header가 아닌 본 페이지에서는 로그인이나 접속 가능한 페이지인지 권한체크
   const [accessToken, setAccessToken] = useState('');
   const router = useRouter();
+  const [isToggleModal, setIsToggleModal] = useState(false);
+
   const userDataUpdatableFields: UserDataUpdatable = { address: '' }; // .types의 UserDataUpdatable의 필드 변경시 같이 변경
   const [formData, setFormData] = useState({
     ...userDataUpdatableFields,
@@ -25,7 +28,7 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
     ...userDataUpdatableFields,
   });
 
-  const { data } = useQuery<
+  const { data, refetch } = useQuery<
     Pick<IQuery, 'fetchUserInfoData'>,
     IQueryFetchUserInfoDataArgs
   >(FETCH_USER_INFO_DATA, {
@@ -42,7 +45,7 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
   const autoInitialize = (data2: Pick<IQuery, 'fetchUserInfoData'>) => {
     // userDataUpdatableFields가 변경되면 초기화 할 때의 setFormData와 setInitialUserData 코드를
     // 수동으로 수정해 주어야 했는데 이 과정을 자동화 하였음
-    const updatedFields = Object.keys(userDataUpdatableFields).reduce(
+    const updatedFields1 = Object.keys(userDataUpdatableFields).reduce(
       (acc, key) => {
         acc[key] = data2.fetchUserInfoData[key] || '';
         return acc;
@@ -50,8 +53,18 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
       {} as typeof userDataUpdatableFields,
     );
 
-    setFormData(updatedFields);
-    setInitialUserData(updatedFields);
+    const updatedFields2 = Object.keys(userDataUpdatableFields).reduce(
+      (acc, key) => {
+        acc[key] = data2.fetchUserInfoData[key] || '';
+        return acc;
+      },
+      {} as typeof userDataUpdatableFields,
+    );
+
+    // updatedFields를 한개만 사용하여 두 State를 초기화하면 같은 주소의 객체를 참조하게 되어
+    // FormData와 InitialUserData중 하나가 바뀌면 다른 하나도 같이 바뀌게 되기 때문에 2개로 사용해준다<div className=""></div>
+    setFormData(updatedFields1);
+    setInitialUserData(updatedFields2);
   };
 
   // userData를 받아와서 formData와 initialUserData 초기화
@@ -59,7 +72,9 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
     if (data) {
       autoInitialize(data);
     }
-  }, [data]);
+  }, [data, refetch]);
+
+  // 리패치를 어따 넣어야 할까
 
   // localStorage에서 Access Token 가져오기
   useEffect(() => {
@@ -116,12 +131,10 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
     // updateUserData API 사용
     // 기존 데이터와 수정입력 데이터 비교 후 변경 사항이 없으면 없다고
     // 변경 사항이 있으면 해당 데이터들만 API로 날리기.
-    // 엑세스 토큰과 변경 데이터들을 날리자.
     const updatedUserData = getUpdatedFields(initialUserData, formData);
 
     if (!updatedUserData) {
       Modal.error({ content: '수정된 항목이 없습니다.' });
-      // return;
     } else {
       // API 호출
       try {
@@ -131,10 +144,25 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
             accessToken,
           },
         });
+        Modal.success({ content: '정보 수정이 완료되었습니다.' });
       } catch (error) {
         Modal.error({ content: '유저 정보 수정 오류' });
       }
+      refetch({ accessToken });
+      router.push('/user/userInfo');
     }
+  };
+
+  const onToggleModal = (): void => {
+    setIsToggleModal((prev) => !prev);
+  };
+
+  //
+
+  const onClickAddressComplete = (addData: Address): void => {
+    formData.address = addData.address;
+
+    onToggleModal();
   };
 
   return (
@@ -143,10 +171,13 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
         <UserInfoUI
           userData={data.fetchUserInfoData}
           isEdit={isEdit}
+          formData={formData}
           onClickMoveToPage={onClickMoveToPage}
           onClickUpdateUserData={onClickUpdateUserData}
-          formData={formData}
+          onClickAddressComplete={onClickAddressComplete}
           handleInputChange={handleInputChange}
+          onToggleModal={onToggleModal}
+          isToggleModal={isToggleModal}
         />
       )}
     </>

@@ -133,7 +133,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     }
   };
 
-  // contents에서 이미지를 추출하여 저장하는 함수
+  /** contents에서 이미지를 추출하여 저장하는 함수 */
   const extractUrls = (content: string): string[] => {
     const srcRegex = /src="([^">]+)"/;
     return content.split('<img').reduce<string[]>((acc, segment) => {
