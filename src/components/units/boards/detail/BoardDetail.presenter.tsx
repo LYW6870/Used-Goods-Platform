@@ -9,6 +9,9 @@ export default function BoardDetailUI({
   onClickUpdate,
   onClickCompleteBoard,
 }: IBoardDetailUIProps) {
+  if (!data) {
+    return <div>Loading...</div>;
+  }
   return (
     <S.Wrapper>
       <S.BodyContainer>

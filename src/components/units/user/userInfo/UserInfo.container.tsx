@@ -55,8 +55,8 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
       {} as typeof userDataUpdatableFields,
     );
 
-    // updatedFields를 한개만 사용하여 두 State를 초기화하면 같은 주소의 객체를 참조하게 되어
-    // FormData와 InitialUserData중 하나가 바뀌면 다른 하나도 같이 바뀌게 되기 때문에 2개로 사용해준다<div className=""></div>
+    // updatedFields를 사용하여 두 State를 초기화하면 같은 주소의 객체를 참조하게 되어
+    // FormData와 InitialUserData중 하나가 바뀌면 다른 하나도 같이 바뀌게 되기 때문에 {...updatedFields}를 사용한다.
     setFormData({ ...updatedFields });
     setInitialUserData({ ...updatedFields });
   };
@@ -67,8 +67,6 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
       autoInitialize(data);
     }
   }, [data, refetch]);
-
-  // 리패치를 어따 넣어야 할까
 
   // localStorage에서 Access Token 가져오기
   useEffect(() => {
@@ -119,6 +117,7 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
     }
   };
 
+  // 특문등 보안위협 제거 추가
   const onClickUpdateUserData = async (): Promise<void> => {
     // updateUserData API 사용
     // 기존 데이터와 수정입력 데이터 비교 후 변경 사항이 없으면 없다고
@@ -148,25 +147,6 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
   const onToggleModal = (): void => {
     setIsToggleModal((prev) => !prev);
   };
-
-  // 아래 함수에서 발생한 스토리.
-  // 처음에 초기화 함수인 autoInitialize 에서 updatedFields를 하나만 선언하고 updatedFields로 두 State를 초기화한다음
-  // onClickAddressComplete 함수에서 formData.address = addData.address; 를 사용했더니 주소를 변경하고 변경완료 버튼을 눌러도
-  // onClickUpdateUserData 함수의 getUpdatedFields(initialUserData, formData) 에서 변경된 부분이 없을때 반환되는 null값이 반환되는
-  // 상황이 발생하였음. 하필이면 refetch를 추가하는 타이밍에 해당 문제 상황을 발견하여 refetch 관련 문제인줄 알고
-  // 한참을 삽질하다 refetch 문제가 아닌 다른 부분 문제인것을 알게 되었음.
-
-  // formData.address = addData.address 를 하게 되면 initialUserData의 address도 같이 바뀌게 되어
-  // getUpdatedFields(initialUserData, formData) 를 하면 같은 값을 비교하여 null이 반환되는것을 확인하였음.
-  // 하지만 도대체 왜 함께 바뀌는지 쉽게 찾아 낼 수 없었고, 이런 저런 시도를 하다 알아낸 formData.address = addData.address 대신
-  // setFormData((prev) => ({  ...prev,  address: addData.address, })); 코드를 사용하니 정상작동되어 원인을 몰라도 해결했으니
-  // 그냥 넘어갈까 하였지만 정확한 원인을 찾아내야 한다고 생각하여 리프레시 한 후 다시 천천히 문제의 원인을 찾았고,
-  // 결국 어느 부분이 문제였는지 찾아 낼 수 있었음.
-  // 그 원인은 바로... 초기화 함수인 autoInitialize 에서 같은 updatedFields로 두개의 State를 초기화 하기 때문에
-  // 발생한 얕은 복사 문제였음. 즉, 두 State가 같은 updatedFields를 참조하기 때문에 한 State만 변경되어도 다른 State까지 함께
-  // 변경되는 일이 발생하였던것. 그렇기 때문에 직접적으로 formData.address를 변경하면 같이 변경이 되었고
-  // setFormData((prev) => ({  ...prev,  address: addData.address, })); 코드를 사용하면 새로운 객체를 생성하여 업데이트 하기 때문에
-  // 정상 작동이 되었던 것이었음.
 
   const onClickAddressComplete = (addData: Address): void => {
     formData.address = addData.address;

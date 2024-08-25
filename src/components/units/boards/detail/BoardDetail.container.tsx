@@ -14,7 +14,7 @@ import {
   DELETE_BOARD,
   FETCH_BOARD,
   UPDATE_IS_COMPLETE,
-} from './BoardDetail.queries.';
+} from './BoardDetail.queries';
 
 export default function BoardDetail() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function BoardDetail() {
         variables: { boardId: Number(router.query.boardId), userId },
       });
       Modal.success({ content: '성공적으로 게시글 삭제가 완료되었습니다.' });
-      // 보드 리스트 혹은 이전페이지로 이동하게 router.push 추가하기.
+      router.push('/boards');
     } catch (err) {
       Modal.error({ content: err.message });
     }
@@ -97,7 +97,7 @@ export default function BoardDetail() {
       });
       Modal.success({ content: '성공적으로 거래 완료 처리 되었습니다.' });
     } catch (err) {
-      Modal.error({ content: error.message });
+      Modal.error({ content: err.message });
     }
   };
 
