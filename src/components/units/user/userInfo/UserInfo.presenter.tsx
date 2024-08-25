@@ -18,7 +18,7 @@ export default function UserInfoUI({
     <>
       <S.Wrapper>
         <S.BodyContainer>
-          <S.Title>{isEdit ? '회원 정보 수정' : '회원 정보'}</S.Title>
+          <S.Title>{isEdit ? '회원 정보 수정' : '회원 정보 확인'}</S.Title>
           <S.Table>
             <tbody>
               <tr>
@@ -35,7 +35,6 @@ export default function UserInfoUI({
               </tr>
               <tr>
                 <th>주소</th>
-                {/* boardWrite처럼 daum post 이용해서 입력받자 상세주소까지는 말고 중간주소까지만 */}
                 {isEdit ? (
                   <td id="address">
                     <S.InputEdit
@@ -45,7 +44,7 @@ export default function UserInfoUI({
                       onChange={handleInputChange}
                       maxLength={60}
                       spellCheck={false}
-                      // readOnly
+                      readOnly
                     />
                     <S.AddBtn onClick={onToggleModal}>주소 수정</S.AddBtn>
                   </td>
@@ -80,8 +79,7 @@ export default function UserInfoUI({
           <S.ButtonWrapper>
             {isEdit ? (
               <S.Button onClick={onClickUpdateUserData}>
-                {' '}
-                정보 수정 완료{' '}
+                정보 수정 완료
               </S.Button>
             ) : (
               <></>
