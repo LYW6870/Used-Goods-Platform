@@ -32,6 +32,38 @@ export type IBoard = {
   userName: Scalars['String']['output'];
 };
 
+export type IChatMessage = {
+  __typename?: 'ChatMessage';
+  chatRoom: IChatRoom;
+  content: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  isRead: Scalars['Boolean']['output'];
+  sender: IUser;
+};
+
+export type IChatRoom = {
+  __typename?: 'ChatRoom';
+  buyer: IUser;
+  buyerLeft: Scalars['Boolean']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  lastMessageAt: Scalars['String']['output'];
+  seller: IUser;
+  sellerLeft: Scalars['Boolean']['output'];
+};
+
+export type IChatRoomSummary = {
+  __typename?: 'ChatRoomSummary';
+  buyer: IUser;
+  id: Scalars['Int']['output'];
+  lastMessage?: Maybe<Scalars['String']['output']>;
+  lastMessageAt?: Maybe<Scalars['String']['output']>;
+  roomName?: Maybe<Scalars['String']['output']>;
+  seller: IUser;
+  unreadMessageCount: Scalars['Int']['output'];
+};
+
 export type ICreateBoardInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   addressDetail?: InputMaybe<Scalars['String']['input']>;
@@ -53,10 +85,14 @@ export type ICreateUserInput = {
 export type IMutation = {
   __typename?: 'Mutation';
   createBoard?: Maybe<Scalars['Int']['output']>;
+  createChatRoom?: Maybe<Scalars['Int']['output']>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
   kakaoTokenCheck?: Maybe<Scalars['Boolean']['output']>;
+  leaveChatRoom?: Maybe<Scalars['Boolean']['output']>;
   logoutUser?: Maybe<Scalars['String']['output']>;
+  markMessagesAsRead?: Maybe<Scalars['Boolean']['output']>;
+  sendMessage?: Maybe<Scalars['Boolean']['output']>;
   testAPIcreateUser?: Maybe<Scalars['Int']['output']>;
   updateBoard?: Maybe<IBoard>;
   updateIsComplete?: Maybe<Scalars['Boolean']['output']>;
@@ -66,6 +102,12 @@ export type IMutation = {
 
 export type IMutationCreateBoardArgs = {
   createBoardInput?: InputMaybe<ICreateBoardInput>;
+};
+
+
+export type IMutationCreateChatRoomArgs = {
+  accessToken: Scalars['String']['input'];
+  sellerId: Scalars['Int']['input'];
 };
 
 
@@ -85,9 +127,28 @@ export type IMutationKakaoTokenCheckArgs = {
 };
 
 
+export type IMutationLeaveChatRoomArgs = {
+  accessToken: Scalars['String']['input'];
+  chatRoomId: Scalars['Int']['input'];
+};
+
+
 export type IMutationLogoutUserArgs = {
   accessToken: Scalars['String']['input'];
   id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type IMutationMarkMessagesAsReadArgs = {
+  accessToken: Scalars['String']['input'];
+  chatRoomId: Scalars['Int']['input'];
+};
+
+
+export type IMutationSendMessageArgs = {
+  accessToken: Scalars['String']['input'];
+  chatRoomId: Scalars['Int']['input'];
+  message: Scalars['String']['input'];
 };
 
 
@@ -119,6 +180,8 @@ export type IQuery = {
   fetchBoard?: Maybe<IBoard>;
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
+  fetchChatRooms: Array<IChatRoomSummary>;
+  fetchMessages: Array<IChatMessage>;
   fetchUserData?: Maybe<IUserData>;
   fetchUserInfoData?: Maybe<IUserInfoData>;
 };
@@ -141,6 +204,17 @@ export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
   checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
   searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type IQueryFetchChatRoomsArgs = {
+  accessToken: Scalars['String']['input'];
+};
+
+
+export type IQueryFetchMessagesArgs = {
+  accessToken: Scalars['String']['input'];
+  chatRoomId: Scalars['Int']['input'];
 };
 
 

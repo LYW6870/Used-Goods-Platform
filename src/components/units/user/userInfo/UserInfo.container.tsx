@@ -55,8 +55,8 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
       {} as typeof userDataUpdatableFields,
     );
 
-    // updatedFields를 사용하여 두 State를 초기화하면 같은 주소의 객체를 참조하게 되어
-    // FormData와 InitialUserData중 하나가 바뀌면 다른 하나도 같이 바뀌게 되기 때문에 {...updatedFields}를 사용한다.
+    // "updatedFields"를 사용하여 두 State를 초기화하면 두 state가 동일한 주소의 객체를 참조하여
+    // 하나의 state 변경시 다른 state도 변경되기 때문에 "{...updatedFields}"를 사용한다.
     setFormData({ ...updatedFields });
     setInitialUserData({ ...updatedFields });
   };

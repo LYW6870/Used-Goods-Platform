@@ -49,6 +49,13 @@ export default function useTokenValidityCheck() {
           // Access Token이 존재하고, 유효한 토큰일경우
           setIsUserSignedIn(true);
         } catch (error) {
+          // 유효하지 않으면 Local Storage에서 엑세스토큰과 유저 데이터 제거
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userData');
+            setIsUserSignedIn(false);
+            window.location.reload();
+          }
           Modal.error({ content: '토큰 검증 오류' });
         }
       }

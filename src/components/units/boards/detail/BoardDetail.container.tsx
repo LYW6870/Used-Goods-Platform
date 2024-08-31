@@ -19,6 +19,8 @@ import {
 export default function BoardDetail() {
   const router = useRouter();
 
+  // 회원일경우, 비회원일경우, 내가 작성한 글일 경우 3가지
+
   // 임시 유저아이디
   const userId = 2;
   const [isUserPermission, setIsUserPermission] = useState(false);

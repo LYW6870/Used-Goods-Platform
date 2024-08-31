@@ -4,7 +4,6 @@ export function getDate(inputTimestamp: any) {
   if (typeof timestamp === 'string') {
     timestamp = parseInt(timestamp, 10);
   }
-
   const date = new Date(timestamp);
 
   // 날짜 유효성 검사
