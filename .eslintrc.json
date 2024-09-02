@@ -19,6 +19,7 @@
     "react/jsx-no-useless-fragment": "off",
     "react/require-default-props": "off",
     "Unexpected console statement.": "off", // console.log에 노란밑줄 거슬림
+    "no-console": "off", // console.log에 노란밑줄 거슬림2
     "Unnecessary escape character.": "off",
     "arrow-body-style": "off",
     "no-restricted-syntax": "off"

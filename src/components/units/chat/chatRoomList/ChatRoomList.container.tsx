@@ -10,36 +10,47 @@ import {
 import ChatRoomListUI from './ChatRoomList.presenter';
 
 export default function ChatRoomList() {
-  const [accessToken, setAccessToken] = useState('');
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const router = useRouter();
 
-  const { data: chatRoomListData } = useQuery<
+  const { data: chatRoomListData, refetch } = useQuery<
     Pick<IQuery, 'fetchChatRooms'>,
     IQueryFetchChatRoomsArgs
-  >(FETCH_CHAT_ROOMS, { variables: { accessToken } });
+  >(FETCH_CHAT_ROOMS, { variables: { accessToken }, skip: !accessToken });
 
   const onClickChatRoom = (event: React.MouseEvent<HTMLDivElement>) => {
-    // router.push(`/chat/${event.currentTarget.id}`);
-
     const chatRoomId = event.currentTarget.id;
     const otherName = event.currentTarget.getAttribute('data-othername'); // roomName을 가져옵니다.
 
     // roomName을 쿼리 파라미터로 전달
-    router.push(
-      `/chat/${chatRoomId}?otherName=${encodeURIComponent(otherName)}`,
-    );
+    if (chatRoomId && otherName) {
+      router.push(
+        `/chat/${chatRoomId}?otherName=${encodeURIComponent(otherName)}`,
+      );
+    } else {
+      Modal.error({ content: '정상적이지 않은 접근입니다.' });
+    }
   };
 
   // localStorage에서 Access Token 가져오기
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (accessToken === null) {
+      const token = localStorage.getItem('accessToken');
+      if (token === null) {
         Modal.error({ content: '유저 정보 로딩 에러 발생' });
       } else {
-        setAccessToken(localStorage.getItem('accessToken'));
+        setAccessToken(token);
       }
     }
   }, []);
+
+  // Access Token이 변경되었을 때 쿼리 재실행
+  useEffect(() => {
+    if (accessToken) {
+      refetch();
+    }
+  }, [accessToken, refetch]);
+
   return (
     <ChatRoomListUI
       chatRoomListData={chatRoomListData}

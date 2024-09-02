@@ -27,3 +27,9 @@ export const SEND_MESSAGE = gql`
     )
   }
 `;
+
+export const MARK_MESSAGES_AS_READ = gql`
+  mutation markMessagesAsRead($chatRoomId: Int!, $accessToken: String!) {
+    markMessagesAsRead(chatRoomId: $chatRoomId, accessToken: $accessToken)
+  }
+`;

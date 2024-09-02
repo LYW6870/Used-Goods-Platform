@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { IChatRoomUIProps } from './ChatRoom.types';
 import { getDate } from '../../../../commons/libraries/utils/utils';
 import * as S from './ChatRoom.styles';

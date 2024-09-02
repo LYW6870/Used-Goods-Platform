@@ -2,6 +2,8 @@ import { getDate } from '../../../../commons/libraries/utils/utils';
 import * as S from './ChatRoomList.styles';
 import { IChatRoomListUIProps } from './ChatRoomList.types';
 
+// 나중에 스타일 전체 수정할 때 제목 넘칠경우 처리 추가하기.
+
 export default function ChatRoomListUI({
   chatRoomListData,
   onClickChatRoom,

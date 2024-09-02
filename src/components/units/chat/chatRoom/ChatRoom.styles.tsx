@@ -57,7 +57,7 @@ export const ChatMessage = styled.div<{ isOwnMessage: boolean }>`
   padding: 10px;
   margin-bottom: 10px;
   background-color: ${({ isOwnMessage }) =>
-    isOwnMessage ? '#d1f2eb' : '#e8f8f5'};
+    isOwnMessage ? '#FEE500' : '#e4a879'};
   border-radius: 10px;
   max-width: 80%;
   align-self: ${({ isOwnMessage }) =>
@@ -85,12 +85,12 @@ export const MessageInputContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 10px;
+  padding: 10px 5px;
   border-top: 1px solid #ccc;
 `;
 
 export const MessageInput = styled.input`
-  width: 85%;
+  width: 87%;
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
