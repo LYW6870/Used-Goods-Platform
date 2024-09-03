@@ -8,6 +8,7 @@ export default function ChatRoomUI({
   myId,
   onChangeMessage,
   onClickSendMessage,
+  onClickLeaveButton,
   message,
   otherUserName,
 }: IChatRoomUIProps): JSX.Element {
@@ -25,10 +26,17 @@ export default function ChatRoomUI({
       <S.BodyContainer>
         <S.ChatHeader>
           <S.ChatRoomTitle>{otherUserName} 님과의 채팅방</S.ChatRoomTitle>
+          {/* <S.LeaveButton onClick={onClickLeaveButton}>
+            채팅방 나가기
+          </S.LeaveButton> */}
         </S.ChatHeader>
         <S.ChatMessagesContainer>
           {chatMessagesData?.fetchMessages.map((el) => (
-            <S.ChatMessage key={el.id} isOwnMessage={el.sender.id === myId}>
+            <S.ChatMessage
+              key={el.id}
+              isOwnMessage={el.sender.id === myId}
+              isRead={el.isRead}
+            >
               <S.MessageSender>
                 {el.sender.id === myId ? '나' : el.sender.name}
               </S.MessageSender>

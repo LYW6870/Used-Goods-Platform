@@ -180,6 +180,7 @@ export type IQuery = {
   fetchBoard?: Maybe<IBoard>;
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
+  fetchChatRoom?: Maybe<IChatRoom>;
   fetchChatRooms: Array<IChatRoomSummary>;
   fetchMessages: Array<IChatMessage>;
   fetchUserData?: Maybe<IUserData>;
@@ -204,6 +205,12 @@ export type IQueryFetchBoardsCountArgs = {
   category?: InputMaybe<Scalars['String']['input']>;
   checkComplete?: InputMaybe<Scalars['Boolean']['input']>;
   searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type IQueryFetchChatRoomArgs = {
+  accessToken: Scalars['String']['input'];
+  chatRoomId: Scalars['Int']['input'];
 };
 
 

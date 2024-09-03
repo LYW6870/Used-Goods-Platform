@@ -49,7 +49,15 @@ export const ChatMessagesContainer = styled.div`
   background-color: #f9f9f9;
 `;
 
-export const ChatMessage = styled.div<{ isOwnMessage: boolean }>`
+export const IsRead = styled.label`
+  font-size: 12px;
+  color: gray;
+`;
+
+export const ChatMessage = styled.div<{
+  isOwnMessage: boolean;
+  isRead: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: ${({ isOwnMessage }) =>
@@ -62,6 +70,24 @@ export const ChatMessage = styled.div<{ isOwnMessage: boolean }>`
   max-width: 80%;
   align-self: ${({ isOwnMessage }) =>
     isOwnMessage ? 'flex-end' : 'flex-start'};
+
+  position: relative;
+
+  // 읽음 여부를 내 메시지에만 표시
+  ${({ isOwnMessage, isRead }) =>
+    isOwnMessage &&
+    isRead &&
+    `
+    margin-bottom: 25px; // 이전 메시지와의 간격 수정
+    &::before {
+      content: '✔ 읽힘';
+      font-size: 12px;
+      color: #35cc35;
+      position: absolute;
+      top: -20px; // 메시지 위에 위치시키기
+      left: 5px;
+    }
+  `}
 `;
 
 export const MessageSender = styled.span`
@@ -109,5 +135,20 @@ export const SendButton = styled.button`
 
   &:hover {
     background-color: #0056b3;
+  }
+`;
+
+export const LeaveButton = styled.button`
+  width: 15%;
+  padding: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #e03b4b;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #c52837;
   }
 `;

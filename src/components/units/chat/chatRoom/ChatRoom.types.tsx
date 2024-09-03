@@ -4,6 +4,7 @@ export interface IChatRoomUIProps {
   chatMessagesData?: Pick<IQuery, 'fetchMessages'>;
   onChangeMessage: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClickSendMessage: () => void;
+  onClickLeaveButton: () => void;
   message?: any;
   myId?: number;
   otherUserName?: string;

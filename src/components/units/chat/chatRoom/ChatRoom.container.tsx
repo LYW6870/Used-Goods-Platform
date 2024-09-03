@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import {
   IMutation,
+  IMutationLeaveChatRoomArgs,
   IMutationMarkMessagesAsReadArgs,
   IMutationSendMessageArgs,
   IQuery,
@@ -14,6 +15,7 @@ import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   MARK_MESSAGES_AS_READ,
+  LEAVE_CHAT_ROOM,
 } from './ChatRoom.queries';
 
 // 0. 채팅읽음 API 넣기, 상대가 안읽은 채팅 표시 (프론트)
@@ -57,6 +59,11 @@ export default function ChatRoom() {
     IMutationMarkMessagesAsReadArgs
   >(MARK_MESSAGES_AS_READ);
 
+  const [leaveChatRoomMutation] = useMutation<
+    Pick<IMutation, 'leaveChatRoom'>,
+    IMutationLeaveChatRoomArgs
+  >(LEAVE_CHAT_ROOM);
+
   // 메시지 입력이 변경될 때 호출되는 함수
   const onChangeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
@@ -86,8 +93,6 @@ export default function ChatRoom() {
           }),
         );
       }
-      // 어차피 채팅을 송신한 쪽도 전송 알림을 받아 리패치한다.
-      // refetch({ accessToken, chatRoomId: Number(router.query.chatRoomId) });
     } catch (error) {
       const errorMessage = (error as Error).message;
       throw new Error(errorMessage);
@@ -96,21 +101,49 @@ export default function ChatRoom() {
     setMessage('');
   };
 
-  // 채팅방 입장 시 메시지를 읽음으로 표시
-  useEffect(() => {
-    if (accessToken && chatRoomId) {
-      markMessagesAsReadMutation({
-        variables: {
-          accessToken,
-          chatRoomId,
-        },
-      }).catch((error) => {
-        Modal.error({ content: `메시지 읽음 처리 오류: ${error.message}` });
-      });
-    }
-  }, [accessToken, chatRoomId]);
+  const onClickLeaveButton = () => {
+    Modal.confirm({
+      title: '채팅방 나가기',
+      content: '정말로 채팅방을 나가시겠습니까?',
+      okText: '예',
+      cancelText: '아니오',
+      onOk: async () => {
+        try {
+          await leaveChatRoomMutation({
+            variables: {
+              chatRoomId,
+              accessToken,
+            },
+          });
+          router.push('/chat/chatRoomList');
+        } catch (error) {
+          Modal.error({ content: `채팅방 나가기 오류: ${error.message}` });
+        }
+      },
+      onCancel() {
+        // 아무 동작도 하지 않음
+      },
+    });
+  };
 
-  // localStorage에서 Access Token 과 userData 가져오기
+  // 메시지를 읽음으로 표시
+  const handleMessageRead = async () => {
+    if (accessToken && chatRoomId) {
+      try {
+        await markMessagesAsReadMutation({
+          variables: {
+            accessToken,
+            chatRoomId,
+          },
+        });
+        //
+      } catch (error) {
+        Modal.error({ content: `메시지 읽음 처리 오류: ${error.message}` });
+      }
+    }
+  };
+
+  // 페이지 로드시 localStorage에서 유저 정보 가져오기
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('accessToken');
@@ -124,16 +157,18 @@ export default function ChatRoom() {
 
       setAccessToken(token);
       setMyId(Number(JSON.parse(userData).id));
+      handleMessageRead();
     }
   }, [router]);
 
+  // WebSocket 연결 및 설정
   useEffect(() => {
     if (accessToken) {
       const socket = new WebSocket(WS_URL);
 
-      // socket.onopen = () => {
-      //   console.log('소켓 연결 성공');
-      // };
+      socket.onopen = () => {
+        handleMessageRead();
+      };
 
       socket.onmessage = async (event) => {
         try {
@@ -141,16 +176,15 @@ export default function ChatRoom() {
           console.log('메시지 수신:', receivedMessage);
 
           if (chatRoomId) {
+            // 상대방이 채팅방에 입장해 있는 경우 읽음 처리
+            if (receivedMessage.senderId !== myId) {
+              await handleMessageRead();
+            }
+
+            // 이후 refetch를 호출하여 UI를 업데이트
             await refetch({
               accessToken,
               chatRoomId,
-            });
-
-            await markMessagesAsReadMutation({
-              variables: {
-                accessToken,
-                chatRoomId,
-              },
             });
           } else {
             Modal.error({ content: '채팅방 ID를 찾을 수 없습니다.' });
@@ -195,6 +229,7 @@ export default function ChatRoom() {
       chatMessagesData={chatMessagesData}
       onChangeMessage={onChangeMessage}
       onClickSendMessage={onClickSendMessage}
+      onClickLeaveButton={onClickLeaveButton}
       myId={myId}
       message={message}
       otherUserName={otherUserName}

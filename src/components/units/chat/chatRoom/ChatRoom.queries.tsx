@@ -10,6 +10,7 @@ export const FETCH_MESSAGES = gql`
       }
       content
       createdAt
+      isRead
     }
   }
 `;
@@ -33,3 +34,19 @@ export const MARK_MESSAGES_AS_READ = gql`
     markMessagesAsRead(chatRoomId: $chatRoomId, accessToken: $accessToken)
   }
 `;
+
+export const LEAVE_CHAT_ROOM = gql`
+  mutation leaveChatRoom($chatRoomId: Int!, $accessToken: String!) {
+    leaveChatRoom(chatRoomId: $chatRoomId, accessToken: $accessToken)
+  }
+`;
+
+// export const FETCH_CHAT_ROOM = gql`
+//   query fetchChatRoom($chatRoomId: Int!, $accessToken: String!) {
+//     fetchChatRoom(chatRoomId: $chatRoomId, accessToken: $accessToken) {
+//       id
+//       buyerLeft
+//       sellerLeft
+//     }
+//   }
+// `;
