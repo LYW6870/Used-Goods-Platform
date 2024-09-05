@@ -26,9 +26,9 @@ export default function ChatRoomUI({
       <S.BodyContainer>
         <S.ChatHeader>
           <S.ChatRoomTitle>{otherUserName} 님과의 채팅방</S.ChatRoomTitle>
-          {/* <S.LeaveButton onClick={onClickLeaveButton}>
+          <S.LeaveButton onClick={onClickLeaveButton}>
             채팅방 나가기
-          </S.LeaveButton> */}
+          </S.LeaveButton>
         </S.ChatHeader>
         <S.ChatMessagesContainer>
           {chatMessagesData?.fetchMessages.map((el) => (

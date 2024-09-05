@@ -18,8 +18,6 @@ import {
   LEAVE_CHAT_ROOM,
 } from './ChatRoom.queries';
 
-// 0. 채팅읽음 API 넣기, 상대가 안읽은 채팅 표시 (프론트)
-// 1. 나가기 버튼추가 및 나가기 API 넣기
 // 2. 중립 채팅(공지 채팅) API 넣기 (나갈때 말고 어떨때 넣을지 생각해보기)
 // 3. 상대가 나갔을때 채팅 막고, 혼자 남았을때 나가기시 진짜 나가냐고 채팅방 내용 지워진다고 경고 띄우기
 // 3.5. 둘 다 나가면 채팅방 지워지도록 하기(나가기 API 수정)
@@ -120,13 +118,10 @@ export default function ChatRoom() {
           Modal.error({ content: `채팅방 나가기 오류: ${error.message}` });
         }
       },
-      onCancel() {
-        // 아무 동작도 하지 않음
-      },
     });
   };
 
-  // 메시지를 읽음으로 표시
+  /** 메시지를 읽음으로 표시 */
   const handleMessageRead = async () => {
     if (accessToken && chatRoomId) {
       try {
@@ -157,20 +152,35 @@ export default function ChatRoom() {
 
       setAccessToken(token);
       setMyId(Number(JSON.parse(userData).id));
-      handleMessageRead();
     }
   }, [router]);
 
   // WebSocket 연결 및 설정
   useEffect(() => {
+    // 컴포넌트가 마운트 상태인지 확인
+    let isMounted = true;
+
     if (accessToken) {
       const socket = new WebSocket(WS_URL);
 
+      // 웹 소켓이 연결되었을때
       socket.onopen = () => {
-        handleMessageRead();
+        if (isMounted) {
+          console.log('WebSocket 연결 완료');
+          setWs(socket);
+          socket.send(
+            JSON.stringify({
+              type: 'messageReadOnEnter',
+              chatRoomId,
+              senderId: myId,
+            }),
+          );
+        }
       };
 
       socket.onmessage = async (event) => {
+        if (!isMounted) return;
+
         try {
           const receivedMessage = JSON.parse(event.data);
           console.log('메시지 수신:', receivedMessage);
@@ -181,7 +191,6 @@ export default function ChatRoom() {
               await handleMessageRead();
             }
 
-            // 이후 refetch를 호출하여 UI를 업데이트
             await refetch({
               accessToken,
               chatRoomId,
@@ -199,13 +208,14 @@ export default function ChatRoom() {
       };
 
       socket.onclose = () => {
-        console.log('소켓 연결 종료');
-        setWs(null);
+        if (isMounted) {
+          console.log('소켓 연결 종료');
+          setWs(null);
+        }
       };
 
-      setWs(socket);
-
       return () => {
+        isMounted = false;
         console.log('소켓 연결 정리중');
         if (
           socket.readyState === WebSocket.OPEN ||

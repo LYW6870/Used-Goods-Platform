@@ -43,7 +43,7 @@ export default function KakaoCallback() {
         'accessToken',
         data.kakaoLogin.socialAccount.accessToken,
       );
-      router.push('http://localhost:3000/boards');
+      router.push('http://localhost:3000/chat/chatRoomList');
 
       // if (visitedPage) {
       //   onClickMoveToPage(visitedPage); // 미작동
