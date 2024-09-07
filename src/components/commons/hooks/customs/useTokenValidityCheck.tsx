@@ -17,8 +17,7 @@ const KAKAO_TOKEN_CHECK = gql`
 
 export default function useTokenValidityCheck() {
   const [kakaoTokenCheck] = useMutation(KAKAO_TOKEN_CHECK);
-  const [isUserSignedIn, setIsUserSignedIn] =
-    useRecoilState(isUserSignedInState);
+  const [, setIsUserSignedIn] = useRecoilState(isUserSignedInState);
 
   const router = useRouter(); //
 
@@ -71,5 +70,8 @@ export default function useTokenValidityCheck() {
     return () => {
       router.events.off('routeChangeComplete', TokenValidityCheck);
     };
-  }, [kakaoTokenCheck, isUserSignedIn, router.events]);
+  }, [kakaoTokenCheck, setIsUserSignedIn, router.events]);
+  // }, [kakaoTokenCheck, isUserSignedIn, router.events]);
+
+  return null;
 }

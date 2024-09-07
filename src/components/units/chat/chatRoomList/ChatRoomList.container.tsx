@@ -20,13 +20,9 @@ export default function ChatRoomList() {
 
   const onClickChatRoom = (event: React.MouseEvent<HTMLDivElement>) => {
     const chatRoomId = event.currentTarget.id;
-    const otherName = event.currentTarget.getAttribute('data-othername'); // roomName을 가져옵니다.
 
-    // roomName을 쿼리 파라미터로 전달
-    if (chatRoomId && otherName) {
-      router.push(
-        `/chat/${chatRoomId}?otherName=${encodeURIComponent(otherName)}`,
-      );
+    if (chatRoomId) {
+      router.push(`/chat/${chatRoomId}`);
     } else {
       Modal.error({ content: '정상적이지 않은 접근입니다.' });
     }

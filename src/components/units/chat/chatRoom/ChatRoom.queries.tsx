@@ -20,11 +20,13 @@ export const SEND_MESSAGE = gql`
     $chatRoomId: Int!
     $message: String!
     $accessToken: String!
+    $isNotice: Boolean!
   ) {
     sendMessage(
       chatRoomId: $chatRoomId
       message: $message
       accessToken: $accessToken
+      isNotice: $isNotice
     )
   }
 `;
@@ -41,12 +43,20 @@ export const LEAVE_CHAT_ROOM = gql`
   }
 `;
 
-// export const FETCH_CHAT_ROOM = gql`
-//   query fetchChatRoom($chatRoomId: Int!, $accessToken: String!) {
-//     fetchChatRoom(chatRoomId: $chatRoomId, accessToken: $accessToken) {
-//       id
-//       buyerLeft
-//       sellerLeft
-//     }
-//   }
-// `;
+export const FETCH_CHAT_ROOM = gql`
+  query fetchChatRoom($chatRoomId: Int!, $accessToken: String!) {
+    fetchChatRoom(chatRoomId: $chatRoomId, accessToken: $accessToken) {
+      id
+      buyer {
+        id
+        name
+      }
+      seller {
+        id
+        name
+      }
+      buyerLeft
+      sellerLeft
+    }
+  }
+`;

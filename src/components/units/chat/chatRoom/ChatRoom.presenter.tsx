@@ -9,6 +9,8 @@ export default function ChatRoomUI({
   onChangeMessage,
   onClickSendMessage,
   onClickLeaveButton,
+  handleEnterPress,
+  isChatDisabled,
   message,
   otherUserName,
 }: IChatRoomUIProps): JSX.Element {
@@ -34,7 +36,9 @@ export default function ChatRoomUI({
           {chatMessagesData?.fetchMessages.map((el) => (
             <S.ChatMessage
               key={el.id}
-              isOwnMessage={el.sender.id === myId}
+              senderType={
+                el.sender.id === myId ? 1 : el.sender.id === 99999 ? 3 : 2
+              }
               isRead={el.isRead}
             >
               <S.MessageSender>
@@ -51,8 +55,12 @@ export default function ChatRoomUI({
             placeholder="메시지를 입력하세요..."
             value={message}
             onChange={onChangeMessage}
+            onKeyDown={handleEnterPress}
+            disabled={isChatDisabled}
           />
-          <S.SendButton onClick={onClickSendMessage}>전송</S.SendButton>
+          <S.SendButton onClick={onClickSendMessage} disabled={isChatDisabled}>
+            전송
+          </S.SendButton>
         </S.MessageInputContainer>
       </S.BodyContainer>
     </S.Wrapper>

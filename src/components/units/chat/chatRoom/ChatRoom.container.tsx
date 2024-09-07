@@ -16,13 +16,11 @@ import {
   SEND_MESSAGE,
   MARK_MESSAGES_AS_READ,
   LEAVE_CHAT_ROOM,
+  FETCH_CHAT_ROOM,
 } from './ChatRoom.queries';
 
-// 2. 중립 채팅(공지 채팅) API 넣기 (나갈때 말고 어떨때 넣을지 생각해보기)
-// 3. 상대가 나갔을때 채팅 막고, 혼자 남았을때 나가기시 진짜 나가냐고 채팅방 내용 지워진다고 경고 띄우기
-// 3.5. 둘 다 나가면 채팅방 지워지도록 하기(나가기 API 수정)
-// 4. 채팅방에서 한사람이 나갔을때, 다시 같은 채팅방에 입장할경우 생각해보기
-// 5. BoardDetail 페이지 수정 (+거래 완료 상태면 채팅버튼 없애고)
+// 1. BoardDetail 페이지 수정 (+거래 완료 상태면 채팅버튼 없애고)
+// ㄴ 채팅방에서 한사람이 나갔을때, 다시 같은 채팅방에 입장할경우 생각해보기
 
 // WebSocket 서버 URL
 const WS_URL = 'ws://localhost:4000';
@@ -32,9 +30,10 @@ export default function ChatRoom() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [message, setMessage] = useState<string>(''); // 메시지 상태 관리
   const [myId, setMyId] = useState<number | null>(null);
+  const [isChatDisabled, setIsChatDisabled] = useState<boolean>(false);
   const [otherUserName, setOtherUserName] = useState<string>('');
+  const [myName, setMyName] = useState<string>('');
   const [ws, setWs] = useState<WebSocket | null>(null); // WebSocket 객체 상태 관리
-  const { otherName } = router.query;
   const chatRoomId: number = Number(router.query.chatRoomId);
 
   const { data: chatMessagesData, refetch } = useQuery<
@@ -44,6 +43,40 @@ export default function ChatRoom() {
     variables: {
       accessToken,
       chatRoomId,
+    },
+    skip: !accessToken || !chatRoomId,
+  });
+
+  useQuery(FETCH_CHAT_ROOM, {
+    variables: {
+      accessToken,
+      chatRoomId,
+    },
+    skip: !accessToken || !chatRoomId,
+    onCompleted: (data) => {
+      if (!myId || !data) return;
+
+      // 나의 Type에 따라 상대방과 나를 구분
+      const isBuyer = myId === data.fetchChatRoom.buyer.id;
+
+      // 상대방의 Left 상태 저장
+      const isOtherUserLeft = isBuyer
+        ? data.fetchChatRoom.sellerLeft
+        : data.fetchChatRoom.buyerLeft;
+
+      setIsChatDisabled(isOtherUserLeft);
+
+      // 각 사용자의 이름 설정
+      setMyName(
+        isBuyer
+          ? data.fetchChatRoom.buyer.name
+          : data.fetchChatRoom.seller.name,
+      );
+      setOtherUserName(
+        isBuyer
+          ? data.fetchChatRoom.seller.name
+          : data.fetchChatRoom.buyer.name,
+      );
     },
   });
 
@@ -68,7 +101,7 @@ export default function ChatRoom() {
   };
 
   const onClickSendMessage = async () => {
-    if (message.trim() === '') {
+    if (message.trim() === '' || isChatDisabled) {
       Modal.error({ content: '메시지를 입력하세요' });
       return;
     }
@@ -79,6 +112,7 @@ export default function ChatRoom() {
           chatRoomId,
           message,
           accessToken,
+          isNotice: false,
         },
       });
 
@@ -99,6 +133,12 @@ export default function ChatRoom() {
     setMessage('');
   };
 
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && !isChatDisabled) {
+      onClickSendMessage();
+    }
+  };
+
   const onClickLeaveButton = () => {
     Modal.confirm({
       title: '채팅방 나가기',
@@ -107,6 +147,27 @@ export default function ChatRoom() {
       cancelText: '아니오',
       onOk: async () => {
         try {
+          // 채팅방 나갔다는 공지 메시지 전송
+          await sendMessageMutation({
+            variables: {
+              chatRoomId,
+              message: `${myName}님이 채팅방에서 나갔습니다.`,
+              accessToken,
+              isNotice: true,
+            },
+          });
+
+          // WebSocket을 통해 실시간 메시지 전송 알림
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(
+              JSON.stringify({
+                chatRoomId,
+                senderId: myId,
+              }),
+            );
+          }
+
+          // 채팅방 나감 알림
           await leaveChatRoomMutation({
             variables: {
               chatRoomId,
@@ -157,16 +218,14 @@ export default function ChatRoom() {
 
   // WebSocket 연결 및 설정
   useEffect(() => {
-    // 컴포넌트가 마운트 상태인지 확인
-    let isMounted = true;
-
     if (accessToken) {
+      // 컴포넌트가 마운트 상태인지 확인
+      let isMounted = true;
       const socket = new WebSocket(WS_URL);
 
       // 웹 소켓이 연결되었을때
       socket.onopen = () => {
         if (isMounted) {
-          console.log('WebSocket 연결 완료');
           setWs(socket);
           socket.send(
             JSON.stringify({
@@ -180,14 +239,16 @@ export default function ChatRoom() {
 
       socket.onmessage = async (event) => {
         if (!isMounted) return;
+        // console.log('receivedMessage', event.data);
 
         try {
           const receivedMessage = JSON.parse(event.data);
-          console.log('메시지 수신:', receivedMessage);
+          // console.log('chatRoomId 상태: ', chatRoomId);
 
           if (chatRoomId) {
             // 상대방이 채팅방에 입장해 있는 경우 읽음 처리
             if (receivedMessage.senderId !== myId) {
+              // console.log('상대방 입장해있음 확인!');
               await handleMessageRead();
             }
 
@@ -195,8 +256,6 @@ export default function ChatRoom() {
               accessToken,
               chatRoomId,
             });
-          } else {
-            Modal.error({ content: '채팅방 ID를 찾을 수 없습니다.' });
           }
         } catch (error) {
           Modal.error({ content: `오류: ${error.message}` });
@@ -209,14 +268,12 @@ export default function ChatRoom() {
 
       socket.onclose = () => {
         if (isMounted) {
-          console.log('소켓 연결 종료');
           setWs(null);
         }
       };
 
       return () => {
         isMounted = false;
-        console.log('소켓 연결 정리중');
         if (
           socket.readyState === WebSocket.OPEN ||
           socket.readyState === WebSocket.CONNECTING
@@ -228,12 +285,6 @@ export default function ChatRoom() {
     return undefined; // accessToken이 없는 경우에 명시적으로 undefined 반환
   }, [accessToken]); // accessToken이 설정된 후에만 WebSocket 연결 시도
 
-  useEffect(() => {
-    if (otherName) {
-      setOtherUserName(String(otherName));
-    }
-  }, [otherName]);
-
   return (
     <ChatRoomUI
       chatMessagesData={chatMessagesData}
@@ -243,6 +294,8 @@ export default function ChatRoom() {
       myId={myId}
       message={message}
       otherUserName={otherUserName}
+      isChatDisabled={isChatDisabled}
+      handleEnterPress={handleEnterPress}
     />
   );
 }

@@ -21,7 +21,6 @@ export default function ChatRoomListUI({
               key={String(el.id)}
               id={String(el.id)}
               onClick={onClickChatRoom}
-              data-othername={el.roomName}
             >
               <S.ChatRoomHeader>
                 <S.ChatRoomHeaderLeft>

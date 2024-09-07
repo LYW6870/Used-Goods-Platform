@@ -55,27 +55,28 @@ export const IsRead = styled.label`
 `;
 
 export const ChatMessage = styled.div<{
-  isOwnMessage: boolean;
+  // senderType이 1이면 나의 채팅 2면 상대의 채팅 3이면 공지
+  senderType: number;
   isRead: boolean;
 }>`
   display: flex;
   flex-direction: column;
-  align-items: ${({ isOwnMessage }) =>
-    isOwnMessage ? 'flex-end' : 'flex-start'};
+  align-items: ${({ senderType }) =>
+    senderType === 1 ? 'flex-end' : senderType === 2 ? 'flex-start' : 'center'};
   padding: 10px;
   margin-bottom: 10px;
-  background-color: ${({ isOwnMessage }) =>
-    isOwnMessage ? '#FEE500' : '#e4a879'};
+  background-color: ${({ senderType }) =>
+    senderType === 1 ? '#FEE500' : senderType === 2 ? '#e4a879' : '#d0f7d9'};
   border-radius: 10px;
   max-width: 80%;
-  align-self: ${({ isOwnMessage }) =>
-    isOwnMessage ? 'flex-end' : 'flex-start'};
+  align-self: ${({ senderType }) =>
+    senderType === 1 ? 'flex-end' : senderType === 2 ? 'flex-start' : 'center'};
 
   position: relative;
 
   // 읽음 여부를 내 메시지에만 표시
-  ${({ isOwnMessage, isRead }) =>
-    isOwnMessage &&
+  ${({ senderType, isRead }) =>
+    senderType === 1 &&
     isRead &&
     `
     margin-bottom: 25px; // 이전 메시지와의 간격 수정
@@ -135,6 +136,11 @@ export const SendButton = styled.button`
 
   &:hover {
     background-color: #0056b3;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
 `;
 

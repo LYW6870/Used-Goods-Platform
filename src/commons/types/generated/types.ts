@@ -148,6 +148,7 @@ export type IMutationMarkMessagesAsReadArgs = {
 export type IMutationSendMessageArgs = {
   accessToken: Scalars['String']['input'];
   chatRoomId: Scalars['Int']['input'];
+  isNotice?: InputMaybe<Scalars['Boolean']['input']>;
   message: Scalars['String']['input'];
 };
 
