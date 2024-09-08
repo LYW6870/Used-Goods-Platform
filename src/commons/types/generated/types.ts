@@ -82,13 +82,21 @@ export type ICreateUserInput = {
   socialAccount?: InputMaybe<ISocialAccountInput>;
 };
 
+export type IKakaoTokenCheckResult = {
+  __typename?: 'KakaoTokenCheckResult';
+  error?: Maybe<Scalars['String']['output']>;
+  expiresIn?: Maybe<Scalars['Int']['output']>;
+  isValid: Scalars['Boolean']['output'];
+  userId?: Maybe<Scalars['String']['output']>;
+};
+
 export type IMutation = {
   __typename?: 'Mutation';
   createBoard?: Maybe<Scalars['Int']['output']>;
   createChatRoom?: Maybe<Scalars['Int']['output']>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
-  kakaoTokenCheck?: Maybe<Scalars['Boolean']['output']>;
+  kakaoTokenCheck: IKakaoTokenCheckResult;
   leaveChatRoom?: Maybe<Scalars['Boolean']['output']>;
   logoutUser?: Maybe<Scalars['String']['output']>;
   markMessagesAsRead?: Maybe<Scalars['Boolean']['output']>;

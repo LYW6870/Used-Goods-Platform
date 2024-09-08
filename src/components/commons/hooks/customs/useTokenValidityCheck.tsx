@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
@@ -9,53 +9,79 @@ import { isUserSignedInState } from '../../../../commons/globalState/index';
 // Access Token이 없으면 아무 동작 하지않고 return 한다.
 // Access Token이 유효하지 않은 경우, local Storage에서 제거 후 새로고침
 
+// const KAKAO_TOKEN_CHECK = gql`
+//   mutation kakaoTokenCheck($accessToken: String!) {
+//     kakaoTokenCheck(accessToken: $accessToken)
+//   }
+// `;
+
+// 카카오 엑세스 토큰 유효성 검사 API
 const KAKAO_TOKEN_CHECK = gql`
   mutation kakaoTokenCheck($accessToken: String!) {
-    kakaoTokenCheck(accessToken: $accessToken)
+    kakaoTokenCheck(accessToken: $accessToken) {
+      isValid
+      userId
+      expiresIn
+      error
+    }
   }
 `;
 
 export default function useTokenValidityCheck() {
   const [kakaoTokenCheck] = useMutation(KAKAO_TOKEN_CHECK);
   const [, setIsUserSignedIn] = useRecoilState(isUserSignedInState);
+  const [isCheckingToken, setIsCheckingToken] = useState(false); // 검증 중인지 여부를 위한 상태
 
-  const router = useRouter(); //
+  const router = useRouter();
 
   useEffect(() => {
     const TokenValidityCheck = async () => {
       if (typeof window !== 'undefined') {
         const accessToken = localStorage.getItem('accessToken');
 
-        // Access Token이 없으면, 통과하지 못한다.
-        if (!accessToken) {
-          return;
-        }
+        // 이미 토큰을 확인 중이라면 중복 검사를 막음
+        if (isCheckingToken || !accessToken) return;
+
+        setIsCheckingToken(true);
 
         // Access Token 유효성 검사
         try {
+          console.log('일번 단계');
           const response = await kakaoTokenCheck({
             variables: { accessToken },
           });
 
-          // 유효하지 않으면 Local Storage에서 엑세스토큰과 유저 데이터 제거
-          if (response.data.kakaoTokenCheck === false) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('userData');
-            setIsUserSignedIn(false);
-            window.location.reload();
-          }
+          console.log('이번 단계', response.data.kakaoTokenCheck);
 
-          // Access Token이 존재하고, 유효한 토큰일경우
-          setIsUserSignedIn(true);
-        } catch (error) {
-          // 유효하지 않으면 Local Storage에서 엑세스토큰과 유저 데이터 제거
-          if (typeof window !== 'undefined') {
+          const tokenCheckResult = response.data.kakaoTokenCheck;
+
+          if (tokenCheckResult.isValid) {
+            // 토큰이 유효하면 로그인 상태 유지
+            setIsUserSignedIn(true);
+          } else if (tokenCheckResult.error) {
+            // 토큰이 유효하지 않으면 에러 메시지 표시 및 토큰 제거
+            console.log('토큰 유효하지 않음: 토큰 제거 및 로그아웃 (1)');
+            Modal.error({
+              content: `토큰이 유효하지 않습니다 (1): ${tokenCheckResult.error}`,
+            });
+
             localStorage.removeItem('accessToken');
             localStorage.removeItem('userData');
             setIsUserSignedIn(false);
-            window.location.reload();
+            window.location.reload(); // 지우고테스트, 안지우고 테스트 한번씩 해보기
           }
-          Modal.error({ content: '토큰 검증 오류' });
+        } catch (error) {
+          // 오류 발생 시 토큰 제거 및 로그아웃 처리
+          console.log('토큰 유효성 확인 중 오류 발생', error);
+          Modal.error({
+            content: '토큰 유효성 확인 중 오류가 발생했습니다.',
+          });
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('userData');
+          setIsUserSignedIn(false);
+          window.location.reload(); // 페이지 새로고침
+        } finally {
+          setIsCheckingToken(false); // 검증 완료 후 상태 해제
         }
       }
     };
@@ -71,7 +97,6 @@ export default function useTokenValidityCheck() {
       router.events.off('routeChangeComplete', TokenValidityCheck);
     };
   }, [kakaoTokenCheck, setIsUserSignedIn, router.events]);
-  // }, [kakaoTokenCheck, isUserSignedIn, router.events]);
 
   return null;
 }

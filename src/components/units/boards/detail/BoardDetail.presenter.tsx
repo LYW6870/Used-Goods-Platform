@@ -4,7 +4,7 @@ import { IBoardDetailUIProps } from './BoardDetail.types';
 
 export default function BoardDetailUI({
   data,
-  isUserPermission,
+  userPermission,
   onClickDelete,
   onClickUpdate,
   onClickCompleteBoard,
@@ -38,16 +38,19 @@ export default function BoardDetailUI({
           />
         </S.ContextContainer>
         <S.ButtonContainer>
-          {isUserPermission ? (
-            <S.Button onClick={onClickCompleteBoard}>거래 완료</S.Button>
-          ) : null}
-          {isUserPermission ? (
-            <S.Button onClick={onClickUpdate}>게시글 수정</S.Button>
-          ) : null}
-          {isUserPermission ? (
-            <S.Button onClick={onClickDelete}>게시글 삭제</S.Button>
-          ) : null}
-          <S.Button>채팅하기</S.Button>
+          {userPermission === 2 && (
+            <>
+              <S.Button onClick={onClickCompleteBoard}>거래 완료</S.Button>
+              <S.Button onClick={onClickUpdate}>게시글 수정</S.Button>
+              <S.Button onClick={onClickDelete}>게시글 삭제</S.Button>
+              <S.Button>채팅하기</S.Button>
+            </>
+          )}
+          {userPermission === 1 && (
+            <>
+              <S.Button>채팅하기</S.Button>
+            </>
+          )}
         </S.ButtonContainer>
       </S.BodyContainer>
     </S.Wrapper>
