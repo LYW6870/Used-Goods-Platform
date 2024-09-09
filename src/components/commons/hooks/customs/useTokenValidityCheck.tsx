@@ -5,16 +5,6 @@ import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import { isUserSignedInState } from '../../../../commons/globalState/index';
 
-// 로컬 스토리지에 있는 카카오 Access Token이 유효한지 확인하는 코드
-// Access Token이 없으면 아무 동작 하지않고 return 한다.
-// Access Token이 유효하지 않은 경우, local Storage에서 제거 후 새로고침
-
-// const KAKAO_TOKEN_CHECK = gql`
-//   mutation kakaoTokenCheck($accessToken: String!) {
-//     kakaoTokenCheck(accessToken: $accessToken)
-//   }
-// `;
-
 // 카카오 엑세스 토큰 유효성 검사 API
 const KAKAO_TOKEN_CHECK = gql`
   mutation kakaoTokenCheck($accessToken: String!) {
@@ -67,19 +57,23 @@ export default function useTokenValidityCheck() {
 
             localStorage.removeItem('accessToken');
             localStorage.removeItem('userData');
+            localStorage.setItem('1번 리셋 오류', '1');
             setIsUserSignedIn(false);
-            window.location.reload(); // 지우고테스트, 안지우고 테스트 한번씩 해보기
+            // window.location.reload(); // 페이지 새로고침 지우고테스트, 안지우고 테스트 한번씩 해보기
           }
         } catch (error) {
-          // 오류 발생 시 토큰 제거 및 로그아웃 처리
-          console.log('토큰 유효성 확인 중 오류 발생', error);
-          Modal.error({
-            content: '토큰 유효성 확인 중 오류가 발생했습니다.',
-          });
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('userData');
+          localStorage.setItem('2-1', '2-1');
+          if (error.networkError) {
+            localStorage.setItem(
+              '2-2 네트워크 오류 발생',
+              error.networkError.message,
+            );
+          } else if (error.graphQLErrors) {
+            localStorage.setItem('2-3 GraphQL 오류 발생', error.graphQLErrors);
+          }
+          localStorage.setItem('2-4 기타 오류', error);
           setIsUserSignedIn(false);
-          window.location.reload(); // 페이지 새로고침
+          window.location.reload(); // 페이지 새로고침 지우고테스트, 안지우고 테스트 한번씩 해보기
         } finally {
           setIsCheckingToken(false); // 검증 완료 후 상태 해제
         }

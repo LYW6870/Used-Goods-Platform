@@ -8,6 +8,7 @@ export default function BoardDetailUI({
   onClickDelete,
   onClickUpdate,
   onClickCompleteBoard,
+  onClickCreateChatRoom,
 }: IBoardDetailUIProps) {
   if (!data) {
     return <div>Loading...</div>;
@@ -43,12 +44,11 @@ export default function BoardDetailUI({
               <S.Button onClick={onClickCompleteBoard}>거래 완료</S.Button>
               <S.Button onClick={onClickUpdate}>게시글 수정</S.Button>
               <S.Button onClick={onClickDelete}>게시글 삭제</S.Button>
-              <S.Button>채팅하기</S.Button>
             </>
           )}
           {userPermission === 1 && (
             <>
-              <S.Button>채팅하기</S.Button>
+              <S.Button onClick={onClickCreateChatRoom}>채팅하기</S.Button>
             </>
           )}
         </S.ButtonContainer>

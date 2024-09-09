@@ -31,3 +31,9 @@ export const UPDATE_IS_COMPLETE = gql`
     updateIsComplete(boardId: $boardId, userId: $userId)
   }
 `;
+
+export const CREATE_CHAT_ROOM = gql`
+  mutation createChatRoom($accessToken: String!, $sellerId: Int!) {
+    createChatRoom(accessToken: $accessToken, sellerId: $sellerId)
+  }
+`;

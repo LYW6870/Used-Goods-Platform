@@ -4,6 +4,7 @@ import { Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import {
   IMutation,
+  IMutationCreateChatRoomArgs,
   IMutationDeleteBoardArgs,
   IMutationUpdateIsCompleteArgs,
   IQuery,
@@ -14,6 +15,7 @@ import {
   DELETE_BOARD,
   FETCH_BOARD,
   UPDATE_IS_COMPLETE,
+  CREATE_CHAT_ROOM,
 } from './BoardDetail.queries';
 
 export default function BoardDetail() {
@@ -45,6 +47,11 @@ export default function BoardDetail() {
     IMutationUpdateIsCompleteArgs
   >(UPDATE_IS_COMPLETE);
 
+  const [createChatRoom] = useMutation<
+    Pick<IMutation, 'createChatRoom'>,
+    IMutationCreateChatRoomArgs
+  >(CREATE_CHAT_ROOM);
+
   // useEffect로 localStorage에서 accessToken과 userData 가져오기
   useEffect(() => {
     const storedAccessToken = localStorage.getItem('accessToken');
@@ -62,7 +69,7 @@ export default function BoardDetail() {
     }
   }, []);
 
-  // 2. 권한 체크 함수
+  // 2. 권한 체크
   useEffect(() => {
     if (!accessToken || !myId) {
       console.log('권한: 비로그인');
@@ -123,6 +130,21 @@ export default function BoardDetail() {
     }
   };
 
+  const onClickCreateChatRoom = async () => {
+    try {
+      const chatRoomId = await createChatRoom({
+        variables: {
+          accessToken,
+          sellerId: Number(data?.fetchBoard.userId),
+        },
+      });
+      if (!chatRoomId) throw new Error('chatRoomId 가 존재하지 않습니다');
+      router.push(`/chat/${chatRoomId.data.createChatRoom}`);
+    } catch (err) {
+      Modal.error({ content: err.message });
+    }
+  };
+
   return (
     <BoardDetailUI
       data={data}
@@ -130,6 +152,7 @@ export default function BoardDetail() {
       onClickDelete={onClickDelete}
       onClickUpdate={onClickUpdate}
       onClickCompleteBoard={onClickCompleteBoard}
+      onClickCreateChatRoom={onClickCreateChatRoom}
     />
   );
 }

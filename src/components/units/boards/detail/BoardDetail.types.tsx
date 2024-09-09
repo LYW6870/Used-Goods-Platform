@@ -6,4 +6,5 @@ export interface IBoardDetailUIProps {
   onClickDelete: () => void;
   onClickUpdate: () => void;
   onClickCompleteBoard: () => void;
+  onClickCreateChatRoom: () => void;
 }

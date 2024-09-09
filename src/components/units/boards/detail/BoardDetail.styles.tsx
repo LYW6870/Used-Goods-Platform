@@ -51,7 +51,7 @@ export const ContextContainer = styled.div`
 export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 export const Button = styled.button`
