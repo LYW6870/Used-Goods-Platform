@@ -14,6 +14,28 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type IAccount = {
+  __typename?: 'Account';
+  accessToken?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  localUserId?: Maybe<Scalars['String']['output']>;
+  password?: Maybe<Scalars['String']['output']>;
+  provider: Scalars['String']['output'];
+  providerUserId?: Maybe<Scalars['String']['output']>;
+  refreshToken?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['String']['output'];
+};
+
+export type IAccountInput = {
+  accessToken?: InputMaybe<Scalars['String']['input']>;
+  localUserId?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  provider: Scalars['String']['input'];
+  providerUserId?: InputMaybe<Scalars['String']['input']>;
+  refreshToken?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type IBoard = {
   __typename?: 'Board';
   address?: Maybe<Scalars['String']['output']>;
@@ -77,9 +99,15 @@ export type ICreateBoardInput = {
   userName: Scalars['String']['input'];
 };
 
-export type ICreateUserInput = {
+export type ICreateLocalUserInput = {
+  id: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  socialAccount?: InputMaybe<ISocialAccountInput>;
+  password: Scalars['String']['input'];
+};
+
+export type ICreateUserInput = {
+  account: IAccountInput;
+  name: Scalars['String']['input'];
 };
 
 export type IKakaoTokenCheckResult = {
@@ -92,30 +120,24 @@ export type IKakaoTokenCheckResult = {
 
 export type IMutation = {
   __typename?: 'Mutation';
+  boardUpdateIsComplete?: Maybe<Scalars['Boolean']['output']>;
   createBoard?: Maybe<Scalars['Int']['output']>;
-  createChatRoom?: Maybe<Scalars['Int']['output']>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
   kakaoTokenCheck: IKakaoTokenCheckResult;
-  leaveChatRoom?: Maybe<Scalars['Boolean']['output']>;
   logoutUser?: Maybe<Scalars['String']['output']>;
-  markMessagesAsRead?: Maybe<Scalars['Boolean']['output']>;
-  sendMessage?: Maybe<Scalars['Boolean']['output']>;
-  testAPIcreateUser?: Maybe<Scalars['Int']['output']>;
   updateBoard?: Maybe<IBoard>;
-  updateIsComplete?: Maybe<Scalars['Boolean']['output']>;
-  updateUserData?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+export type IMutationBoardUpdateIsCompleteArgs = {
+  boardId: Scalars['Int']['input'];
+  userId: Scalars['Int']['input'];
 };
 
 
 export type IMutationCreateBoardArgs = {
   createBoardInput?: InputMaybe<ICreateBoardInput>;
-};
-
-
-export type IMutationCreateChatRoomArgs = {
-  accessToken: Scalars['String']['input'];
-  sellerId: Scalars['Int']['input'];
 };
 
 
@@ -135,34 +157,9 @@ export type IMutationKakaoTokenCheckArgs = {
 };
 
 
-export type IMutationLeaveChatRoomArgs = {
-  accessToken: Scalars['String']['input'];
-  chatRoomId: Scalars['Int']['input'];
-};
-
-
 export type IMutationLogoutUserArgs = {
   accessToken: Scalars['String']['input'];
   id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type IMutationMarkMessagesAsReadArgs = {
-  accessToken: Scalars['String']['input'];
-  chatRoomId: Scalars['Int']['input'];
-};
-
-
-export type IMutationSendMessageArgs = {
-  accessToken: Scalars['String']['input'];
-  chatRoomId: Scalars['Int']['input'];
-  isNotice?: InputMaybe<Scalars['Boolean']['input']>;
-  message: Scalars['String']['input'];
-};
-
-
-export type IMutationTestApIcreateUserArgs = {
-  createUserInput?: InputMaybe<ICreateUserInput>;
 };
 
 
@@ -172,28 +169,13 @@ export type IMutationUpdateBoardArgs = {
   userId: Scalars['Int']['input'];
 };
 
-
-export type IMutationUpdateIsCompleteArgs = {
-  boardId: Scalars['Int']['input'];
-  userId: Scalars['Int']['input'];
-};
-
-
-export type IMutationUpdateUserDataArgs = {
-  accessToken: Scalars['String']['input'];
-  updateUserDataInput?: InputMaybe<IUpdateUserDataInput>;
-};
-
 export type IQuery = {
   __typename?: 'Query';
   fetchBoard?: Maybe<IBoard>;
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
-  fetchChatRoom?: Maybe<IChatRoom>;
-  fetchChatRooms: Array<IChatRoomSummary>;
-  fetchMessages: Array<IChatMessage>;
   fetchUserData?: Maybe<IUserData>;
-  fetchUserInfoData?: Maybe<IUserInfoData>;
+  testAPIJWTTokenCheck: Scalars['String']['output'];
 };
 
 
@@ -217,48 +199,14 @@ export type IQueryFetchBoardsCountArgs = {
 };
 
 
-export type IQueryFetchChatRoomArgs = {
-  accessToken: Scalars['String']['input'];
-  chatRoomId: Scalars['Int']['input'];
-};
-
-
-export type IQueryFetchChatRoomsArgs = {
-  accessToken: Scalars['String']['input'];
-};
-
-
-export type IQueryFetchMessagesArgs = {
-  accessToken: Scalars['String']['input'];
-  chatRoomId: Scalars['Int']['input'];
-};
-
-
 export type IQueryFetchUserDataArgs = {
   accessToken: Scalars['String']['input'];
 };
 
 
-export type IQueryFetchUserInfoDataArgs = {
+export type IQueryTestApijwtTokenCheckArgs = {
   accessToken: Scalars['String']['input'];
-};
-
-export type ISocialAccount = {
-  __typename?: 'SocialAccount';
-  accessToken?: Maybe<Scalars['String']['output']>;
-  createdAt: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
-  provider: Scalars['String']['output'];
-  providerUserId: Scalars['String']['output'];
-  refreshToken?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['String']['output'];
-};
-
-export type ISocialAccountInput = {
-  accessToken?: InputMaybe<Scalars['String']['input']>;
-  provider: Scalars['String']['input'];
-  providerUserId: Scalars['String']['input'];
-  refreshToken?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
 };
 
 export type IUpdateBoardInput = {
@@ -278,35 +226,35 @@ export type IUpdateUserDataInput = {
 
 export type IUser = {
   __typename?: 'User';
+  account: IAccount;
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   rating: Scalars['Int']['output'];
-  socialAccount: ISocialAccount;
   updatedAt: Scalars['String']['output'];
 };
 
 export type IUserData = {
   __typename?: 'UserData';
+  account: IAccount;
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   provider?: Maybe<Scalars['String']['output']>;
   rating: Scalars['Int']['output'];
-  socialAccount: ISocialAccount;
   updatedAt: Scalars['String']['output'];
 };
 
 export type IUserInfoData = {
   __typename?: 'UserInfoData';
+  account: IAccount;
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   provider?: Maybe<Scalars['String']['output']>;
   rating: Scalars['Int']['output'];
-  socialAccount: ISocialAccount;
   updatedAt: Scalars['String']['output'];
 };

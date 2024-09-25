@@ -13,6 +13,7 @@ const FETCH_USER_DATA = gql`
     fetchUserData(accessToken: $accessToken) {
       id
       name
+      rating
       provider
     }
   }

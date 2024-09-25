@@ -1,10 +1,12 @@
+20240911 ½ÃÀÛ½Ã gptÀÇ ÅäÅ«À¯È¿¼º°Ë»ç ÄÚµå °³¼± Àü Á¤»óÀÛµ¿ÄÚµå ¹é¾÷
+
 import { gql, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import { isUserSignedInState } from '../../../../commons/globalState/index';
 
-// ì¹´ì¹´ì˜¤ ì—‘ì„¸ìŠ¤ í† í° ìœ íš¨ì„± ê²€ì‚¬ API
+// Ä«Ä«¿À ¿¢¼¼½º ÅäÅ« À¯È¿¼º °Ë»ç API
 const KAKAO_TOKEN_CHECK = gql`
   mutation kakaoTokenCheck($accessToken: String!) {
     kakaoTokenCheck(accessToken: $accessToken) {
@@ -20,8 +22,8 @@ export default function useTokenValidityCheck() {
   const [kakaoTokenCheck] = useMutation(KAKAO_TOKEN_CHECK);
   const [, setIsUserSignedIn] = useRecoilState(isUserSignedInState);
   const [isCheckingToken, setIsCheckingToken] = useState(false);
-  const [retryCount, setRetryCount] = useState(0); // ì¼ì‹œì ì¸ ë„¤í¬ì›Œí¬ ì˜¤ë¥˜ì‹œ ìž¬ì‹œë„ ì¹´ìš´íŠ¸
-  const MAX_RETRIES = 2; // ìµœëŒ€ ìž¬ì‹œë„ íšŸìˆ˜ ì„¤ì •
+  const [retryCount, setRetryCount] = useState(0); // ÀÏ½ÃÀûÀÎ ³×Å©¿öÅ© ¿À·ù½Ã Àç½Ãµµ Ä«¿îÆ®
+  const MAX_RETRIES = 2; // ÃÖ´ë Àç½Ãµµ È½¼ö ¼³Á¤
   const router = useRouter();
 
   useEffect(() => {
@@ -29,17 +31,17 @@ export default function useTokenValidityCheck() {
       if (retryCount < MAX_RETRIES) {
         const newRetryCount = retryCount + 1;
         localStorage.setItem(
-          `ìž¬ì‹œë„ ${newRetryCount}íšŒ ë°œìƒ ${new Date().getSeconds()}`,
-          `ìž¬ì‹œë„ ${newRetryCount}íšŒ ë°œìƒ`,
+          `Àç½Ãµµ ${newRetryCount}È¸ ¹ß»ý ${new Date().getSeconds()}`,
+          `Àç½Ãµµ ${newRetryCount}È¸ ¹ß»ý`,
         );
 
-        // ìƒíƒœ ì—…ë°ì´íŠ¸ í›„ ìž¬ì‹œë„
+        // »óÅÂ ¾÷µ¥ÀÌÆ® ÈÄ Àç½Ãµµ
         setRetryCount(newRetryCount);
       } else {
-        // ìµœëŒ€ ìž¬ì‹œë„ íšŸìˆ˜ë¥¼ ë„˜ì€ ê²½ìš° í† í° ì‚­ì œ ë° ë¡œê·¸ì•„ì›ƒ
+        // ÃÖ´ë Àç½Ãµµ È½¼ö¸¦ ³ÑÀº °æ¿ì ÅäÅ« »èÁ¦ ¹× ·Î±×¾Æ¿ô
         localStorage.setItem(
-          `ìµœëŒ€ ìž¬ì‹œë„ íšŸìˆ˜ ì´ˆê³¼ ${new Date().getSeconds()}`,
-          'ìµœëŒ€ ìž¬ì‹œë„ íšŸìˆ˜ ì´ˆê³¼: í† í° ì œê±° ë° ë¡œê·¸ì•„ì›ƒ',
+          `ÃÖ´ë Àç½Ãµµ È½¼ö ÃÊ°ú ${new Date().getSeconds()}`,
+          'ÃÖ´ë Àç½Ãµµ È½¼ö ÃÊ°ú: ÅäÅ« Á¦°Å ¹× ·Î±×¾Æ¿ô',
         );
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userData');
@@ -52,12 +54,12 @@ export default function useTokenValidityCheck() {
       if (typeof window !== 'undefined') {
         const accessToken = localStorage.getItem('accessToken');
 
-        // ì´ë¯¸ í† í°ì„ í™•ì¸ ì¤‘ì´ê±°ë‚˜ ì¤‘ë³µ í˜¸ì¶œì„ ë°©ì§€
+        // ÀÌ¹Ì ÅäÅ«À» È®ÀÎ ÁßÀÌ°Å³ª Áßº¹ È£ÃâÀ» ¹æÁö
         if (isCheckingToken || !accessToken) return;
 
         setIsCheckingToken(true);
 
-        // ì²« ë²ˆì§¸ ì‹œë„ì—ì„œë§Œ API í˜¸ì¶œ
+        // Ã¹ ¹øÂ° ½Ãµµ¿¡¼­¸¸ API È£Ãâ
         if (retryCount === 0) {
           try {
             const response = await kakaoTokenCheck({
@@ -67,52 +69,52 @@ export default function useTokenValidityCheck() {
             const tokenCheckResult = response.data.kakaoTokenCheck;
 
             if (tokenCheckResult.isValid) {
-              // í† í°ì´ ìœ íš¨í•˜ë©´ ë¡œê·¸ì¸ ìƒíƒœ ìœ ì§€ ë° ìž¬ì‹œë„ íšŸìˆ˜ ì´ˆê¸°í™”
+              // ÅäÅ«ÀÌ À¯È¿ÇÏ¸é ·Î±×ÀÎ »óÅÂ À¯Áö ¹× Àç½Ãµµ È½¼ö ÃÊ±âÈ­
               setIsUserSignedIn(true);
-              setRetryCount(0); // ìž¬ì‹œë„ íšŸìˆ˜ ì´ˆê¸°í™”
+              setRetryCount(0); // Àç½Ãµµ È½¼ö ÃÊ±âÈ­
             } else if (tokenCheckResult.error) {
               localStorage.removeItem('accessToken');
               localStorage.removeItem('userData');
-              localStorage.setItem('1ë²ˆ ì˜¤ë¥˜(ì •ìƒì˜¤ë¥˜)', '1');
+              localStorage.setItem('1¹ø ¿À·ù(Á¤»ó¿À·ù)', '1');
               setIsUserSignedIn(false);
               window.location.reload();
             }
           } catch (error) {
             localStorage.setItem(
-              'ë„¤íŠ¸ì›Œí¬ ì˜¤ë¥˜ ë°œìƒ',
-              'ë„¤íŠ¸ì›Œí¬ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤',
+              '³×Æ®¿öÅ© ¿À·ù ¹ß»ý',
+              '³×Æ®¿öÅ© ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù',
             );
 
             if (error.networkError || error.graphQLErrors) {
-              // ìž¬ì‹œë„ ë¡œì§ ì œì–´: retryCountì— ë”°ë¼ ë™ìž‘
+              // Àç½Ãµµ ·ÎÁ÷ Á¦¾î: retryCount¿¡ µû¶ó µ¿ÀÛ
               handleRetry();
             } else {
-              localStorage.setItem('ê¸°íƒ€ ì˜¤ë¥˜', error);
+              localStorage.setItem('±âÅ¸ ¿À·ù', error);
               setIsUserSignedIn(false);
             }
           } finally {
-            setIsCheckingToken(false); // ê²€ì¦ ì™„ë£Œ í›„ ìƒíƒœ í•´ì œ
+            setIsCheckingToken(false); // °ËÁõ ¿Ï·á ÈÄ »óÅÂ ÇØÁ¦
           }
         }
       }
     };
 
-    // retryCountê°€ 0ì¼ ë•Œ ìµœì´ˆ API í˜¸ì¶œ, ì´í›„ì—ëŠ” ìž¬ì‹œë„ë§Œ ì‹¤í–‰
+    // retryCount°¡ 0ÀÏ ¶§ ÃÖÃÊ API È£Ãâ, ÀÌÈÄ¿¡´Â Àç½Ãµµ¸¸ ½ÇÇà
     if (retryCount === 0) {
-      TokenValidityCheck(); // ìµœì´ˆ ì‹¤í–‰ ì‹œ í˜¸ì¶œ
+      TokenValidityCheck(); // ÃÖÃÊ ½ÇÇà ½Ã È£Ãâ
     }
 
     if (retryCount > 0 && retryCount <= MAX_RETRIES) {
-      // ìž¬ì‹œë„ ë¡œì§ (API í˜¸ì¶œí•˜ì§€ ì•Šê³  ìƒíƒœë§Œ ì—…ë°ì´íŠ¸)
+      // Àç½Ãµµ ·ÎÁ÷ (API È£ÃâÇÏÁö ¾Ê°í »óÅÂ¸¸ ¾÷µ¥ÀÌÆ®)
       setTimeout(() => {
         handleRetry();
-      }, 200); // 0.2ì´ˆ ì§€ì—° í›„ ìž¬ì‹œë„ í˜¸ì¶œ
+      }, 200); // 0.2ÃÊ Áö¿¬ ÈÄ Àç½Ãµµ È£Ãâ
     }
 
-    // ë¼ìš°íŠ¸ ë³€ê²½ ì™„ë£Œ ì´ë²¤íŠ¸ ê°ì§€
+    // ¶ó¿ìÆ® º¯°æ ¿Ï·á ÀÌº¥Æ® °¨Áö
     router.events.on('routeChangeComplete', TokenValidityCheck);
 
-    // ì»´í¬ë„ŒíŠ¸ ì–¸ë§ˆìš´íŠ¸ ì‹œ ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ ì œê±°
+    // ÄÄÆ÷³ÍÆ® ¾ð¸¶¿îÆ® ½Ã ÀÌº¥Æ® ¸®½º³Ê Á¦°Å
     return () => {
       router.events.off('routeChangeComplete', TokenValidityCheck);
     };
