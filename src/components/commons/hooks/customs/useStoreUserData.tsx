@@ -29,7 +29,7 @@ export default function useStoreUserData(): IUserData | null {
 
   // 엑세스 코드 획득
   if (typeof window !== 'undefined') {
-    token = localStorage.getItem('accessToken');
+    token = localStorage.getItem('userToken');
   }
 
   // 유저 정보 불러오기
@@ -48,7 +48,7 @@ export default function useStoreUserData(): IUserData | null {
   if (typeof window !== 'undefined') {
     // 저장되어 있는 유저 정보가 없으면 불러온 유저 정보 local Storage에 저장
     if (!localStorage.getItem('userData')) {
-      token = localStorage.getItem('accessToken');
+      token = localStorage.getItem('userToken');
 
       // 백엔드로 부터 가져온 유저 데이터가 비어있지 않으면
       if (queryData !== undefined && queryData !== null) {

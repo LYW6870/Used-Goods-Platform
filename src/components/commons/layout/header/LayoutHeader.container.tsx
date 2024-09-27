@@ -8,10 +8,10 @@ import useStoreUserData from '../../hooks/customs/useStoreUserData';
 import LayoutHeaderUI from './LayoutHeader.presenter';
 import {
   IMutation,
-  IMutationLogoutUserArgs,
+  IMutationKakaoLogoutArgs,
   IUserData,
 } from '../../../../commons/types/generated/types';
-import { LOGOUT_USER } from './LayoutHeader.queries';
+import { KAKAO_LOGOUT } from './LayoutHeader.queries';
 
 // LayoutHeader에 알림을 넣을까? 새로운 채팅존재알림이라든지.. 근데 기능 추가 구현해야할듯.
 
@@ -24,7 +24,7 @@ export default function LayoutHeader(): JSX.Element {
     useRecoilState(isUserSignedInState);
   const router = useRouter();
 
-  let accessToken;
+  let userToken;
 
   if (
     typeof window !== 'undefined' &&
@@ -34,10 +34,10 @@ export default function LayoutHeader(): JSX.Element {
     Modal.error({ content: '유저 정보 로딩 에러 발생' });
   }
 
-  const [logoutUser] = useMutation<
-    Pick<IMutation, 'logoutUser'>,
-    IMutationLogoutUserArgs
-  >(LOGOUT_USER);
+  const [kakaoLogout] = useMutation<
+    Pick<IMutation, 'kakaoLogout'>,
+    IMutationKakaoLogoutArgs
+  >(KAKAO_LOGOUT);
 
   const onClickLogin = () => {
     router.push('/auth/login');
@@ -46,8 +46,8 @@ export default function LayoutHeader(): JSX.Element {
   const onClickLogout = async () => {
     // 토큰 가져오기
     if (typeof window !== 'undefined') {
-      accessToken = localStorage.getItem('accessToken');
-      if (accessToken === null) {
+      userToken = localStorage.getItem('userToken');
+      if (userToken === null) {
         Modal.error({ content: '유저 정보 로딩 에러 발생' });
         window.location.reload(); // 새로고침
       }
@@ -55,14 +55,14 @@ export default function LayoutHeader(): JSX.Element {
 
     // 로그아웃 API 실행
     try {
-      await logoutUser({
+      await kakaoLogout({
         variables: {
-          accessToken,
+          accessToken: userToken,
           id: UserData?.id,
         },
       });
 
-      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userToken');
       localStorage.removeItem('userData');
       setIsUserSignedIn(false);
 

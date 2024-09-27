@@ -14,7 +14,6 @@ import gql from 'graphql-tag';
 const KAKAO_LOGIN = gql`
   mutation kakaoLogin($code: String!) {
     kakaoLogin(code: $code) {
-      # 여러과정을거쳐 반환.. 어떤값들을 반환받을까..
       id
       name
       account {
@@ -39,7 +38,8 @@ export default function KakaoCallback() {
   useEffect(() => {
     if (data) {
       // 로그인 후 처리
-      localStorage.setItem('accessToken', data.kakaoLogin.account.accessToken);
+      console.log(data.kakaoLogin);
+      localStorage.setItem('userToken', data.kakaoLogin.account.accessToken);
       router.push('http://localhost:3000/');
 
       // if (visitedPage) {

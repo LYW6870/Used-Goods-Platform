@@ -106,8 +106,9 @@ export type ICreateLocalUserInput = {
 };
 
 export type ICreateUserInput = {
-  account: IAccountInput;
+  localUserId: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type IKakaoTokenCheckResult = {
@@ -122,10 +123,11 @@ export type IMutation = {
   __typename?: 'Mutation';
   boardUpdateIsComplete?: Maybe<Scalars['Boolean']['output']>;
   createBoard?: Maybe<Scalars['Int']['output']>;
+  createLocalUser?: Maybe<IAccount>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
+  kakaoLogout?: Maybe<Scalars['String']['output']>;
   kakaoTokenCheck: IKakaoTokenCheckResult;
-  logoutUser?: Maybe<Scalars['String']['output']>;
   updateBoard?: Maybe<IBoard>;
 };
 
@@ -141,6 +143,11 @@ export type IMutationCreateBoardArgs = {
 };
 
 
+export type IMutationCreateLocalUserArgs = {
+  createUserInput?: InputMaybe<ICreateUserInput>;
+};
+
+
 export type IMutationDeleteBoardArgs = {
   boardId?: InputMaybe<Scalars['Int']['input']>;
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -152,14 +159,14 @@ export type IMutationKakaoLoginArgs = {
 };
 
 
-export type IMutationKakaoTokenCheckArgs = {
+export type IMutationKakaoLogoutArgs = {
   accessToken: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
-export type IMutationLogoutUserArgs = {
+export type IMutationKakaoTokenCheckArgs = {
   accessToken: Scalars['String']['input'];
-  id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -175,7 +182,9 @@ export type IQuery = {
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
   fetchUserData?: Maybe<IUserData>;
-  testAPIJWTTokenCheck: Scalars['String']['output'];
+  localTokenCheck2: Scalars['String']['output'];
+  loginLocalUser: Scalars['String']['output'];
+  validateToken: Scalars['Int']['output'];
 };
 
 
@@ -204,9 +213,20 @@ export type IQueryFetchUserDataArgs = {
 };
 
 
-export type IQueryTestApijwtTokenCheckArgs = {
-  accessToken: Scalars['String']['input'];
+export type IQueryLocalTokenCheck2Args = {
   id: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+};
+
+
+export type IQueryLoginLocalUserArgs = {
+  id: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
+export type IQueryValidateTokenArgs = {
+  token: Scalars['String']['input'];
 };
 
 export type IUpdateBoardInput = {
