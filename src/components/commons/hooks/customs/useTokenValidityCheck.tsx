@@ -79,7 +79,6 @@ export default function useTokenValidityCheck() {
   useEffect(() => {
     if (data) {
       const tokenCheckResult = data.validateToken;
-      localStorage.setItem('반환받은토큰타입', tokenCheckResult);
 
       // 1: 로컬 유저, 2: 카카오 유저, 10: 유효하지 않은 토큰
       if (tokenCheckResult === 1 || tokenCheckResult === 2) {

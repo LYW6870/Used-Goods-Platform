@@ -9,8 +9,8 @@ import {
 } from '../../../../commons/types/generated/types';
 
 const FETCH_USER_DATA = gql`
-  query fetchUserData($accessToken: String!) {
-    fetchUserData(accessToken: $accessToken) {
+  query fetchUserData($token: String!) {
+    fetchUserData(token: $token) {
       id
       name
       rating
@@ -27,7 +27,7 @@ export default function useStoreUserData(): IUserData | null {
   let returnUserData = null;
   let token;
 
-  // 엑세스 코드 획득
+  // 토큰 얻기
   if (typeof window !== 'undefined') {
     token = localStorage.getItem('userToken');
   }
@@ -37,7 +37,7 @@ export default function useStoreUserData(): IUserData | null {
     Pick<IQuery, 'fetchUserData'>,
     IQueryFetchUserDataArgs
   >(FETCH_USER_DATA, {
-    variables: { accessToken: token },
+    variables: { token },
   });
 
   // 로그인이 되어있지 않거나 엑세스 토큰이 없으면
