@@ -123,10 +123,11 @@ export type IMutation = {
   __typename?: 'Mutation';
   boardUpdateIsComplete?: Maybe<Scalars['Boolean']['output']>;
   createBoard?: Maybe<Scalars['Int']['output']>;
-  createLocalUser?: Maybe<IAccount>;
+  createLocalUser?: Maybe<Scalars['Boolean']['output']>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
   kakaoTokenCheck: IKakaoTokenCheckResult;
+  loginLocalUser: Scalars['String']['output'];
   updateBoard?: Maybe<IBoard>;
   userLogout?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -164,6 +165,12 @@ export type IMutationKakaoTokenCheckArgs = {
 };
 
 
+export type IMutationLoginLocalUserArgs = {
+  id: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
 export type IMutationUpdateBoardArgs = {
   boardId: Scalars['Int']['input'];
   updateBoardInput?: InputMaybe<IUpdateBoardInput>;
@@ -177,13 +184,18 @@ export type IMutationUserLogoutArgs = {
 
 export type IQuery = {
   __typename?: 'Query';
+  checkIdDuplication?: Maybe<Scalars['Boolean']['output']>;
   fetchBoard?: Maybe<IBoard>;
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
   fetchUserData?: Maybe<IUserData>;
   localTokenCheck2: Scalars['String']['output'];
-  loginLocalUser: Scalars['String']['output'];
   validateToken: Scalars['Int']['output'];
+};
+
+
+export type IQueryCheckIdDuplicationArgs = {
+  localUserId: Scalars['String']['input'];
 };
 
 
@@ -215,12 +227,6 @@ export type IQueryFetchUserDataArgs = {
 export type IQueryLocalTokenCheck2Args = {
   id: Scalars['String']['input'];
   token: Scalars['String']['input'];
-};
-
-
-export type IQueryLoginLocalUserArgs = {
-  id: Scalars['String']['input'];
-  password: Scalars['String']['input'];
 };
 
 

@@ -1,6 +1,5 @@
 import { useRecoilState } from 'recoil';
 import { gql, useQuery } from '@apollo/client';
-import { Modal } from 'antd';
 import { isUserSignedInState } from '../../../../commons/globalState/index';
 import {
   IQuery,
@@ -56,8 +55,7 @@ export default function useStoreUserData(): IUserData | null {
 
         localStorage.setItem('userData', userData);
       } else {
-        Modal.error({ content: '유저 정보에 오류가 있습니다' });
-        window.location.reload();
+        // window.location.reload();
       }
     }
 
