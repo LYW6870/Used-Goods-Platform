@@ -129,6 +129,7 @@ export type IMutation = {
   kakaoTokenCheck: IKakaoTokenCheckResult;
   loginLocalUser: Scalars['String']['output'];
   updateBoard?: Maybe<IBoard>;
+  updateUserData?: Maybe<Scalars['Boolean']['output']>;
   userLogout?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -178,6 +179,12 @@ export type IMutationUpdateBoardArgs = {
 };
 
 
+export type IMutationUpdateUserDataArgs = {
+  token: Scalars['String']['input'];
+  updateUserDataInput?: InputMaybe<IUpdateUserDataInput>;
+};
+
+
 export type IMutationUserLogoutArgs = {
   token: Scalars['String']['input'];
 };
@@ -189,6 +196,7 @@ export type IQuery = {
   fetchBoards?: Maybe<Array<Maybe<IBoard>>>;
   fetchBoardsCount?: Maybe<Scalars['Int']['output']>;
   fetchUserData?: Maybe<IUserData>;
+  fetchUserInfoData?: Maybe<IUserInfoData>;
   localTokenCheck2: Scalars['String']['output'];
   validateToken: Scalars['Int']['output'];
 };
@@ -220,6 +228,11 @@ export type IQueryFetchBoardsCountArgs = {
 
 
 export type IQueryFetchUserDataArgs = {
+  token: Scalars['String']['input'];
+};
+
+
+export type IQueryFetchUserInfoDataArgs = {
   token: Scalars['String']['input'];
 };
 
@@ -273,7 +286,6 @@ export type IUserData = {
 
 export type IUserInfoData = {
   __typename?: 'UserInfoData';
-  account: IAccount;
   address?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];

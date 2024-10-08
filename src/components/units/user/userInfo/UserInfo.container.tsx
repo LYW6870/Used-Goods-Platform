@@ -16,7 +16,7 @@ import { IUserInfoProps, UserDataUpdatable } from './UserInfo.types';
 export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
   // 유저 정보 확인에서, 토큰과 유저id 보내서 토큰이 유효하고, id에 토큰이 있으면 반환 아니면 오류
   // header가 아닌 본 페이지에서는 로그인이나 접속 가능한 페이지인지 권한체크
-  const [accessToken, setAccessToken] = useState('');
+  const [token, setToken] = useState('');
   const router = useRouter();
   const [isToggleModal, setIsToggleModal] = useState(false);
 
@@ -34,8 +34,8 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
     Pick<IQuery, 'fetchUserInfoData'>,
     IQueryFetchUserInfoDataArgs
   >(FETCH_USER_INFO_DATA, {
-    variables: { accessToken },
-    skip: !accessToken,
+    variables: { token },
+    skip: !token,
   });
 
   const [updateUserData] = useMutation<
@@ -71,10 +71,10 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
   // localStorage에서 Access Token 가져오기
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (accessToken === null) {
+      if (token === null) {
         Modal.error({ content: '유저 정보 로딩 에러 발생' });
       } else {
-        setAccessToken(localStorage.getItem('accessToken'));
+        setToken(localStorage.getItem('userToken'));
       }
     }
   }, []);
@@ -132,14 +132,14 @@ export default function UserInfo({ isEdit }: IUserInfoProps): JSX.Element {
         await updateUserData({
           variables: {
             updateUserDataInput: updatedUserData,
-            accessToken,
+            token,
           },
         });
         Modal.success({ content: '정보 수정이 완료되었습니다.' });
       } catch (error) {
         Modal.error({ content: '유저 정보 수정 오류' });
       }
-      refetch({ accessToken });
+      refetch({ token });
       router.push('/user/userInfo');
     }
   };

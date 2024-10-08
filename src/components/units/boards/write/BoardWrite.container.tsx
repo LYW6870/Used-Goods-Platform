@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,9 +17,13 @@ import { schema } from './BoardWrite.schema';
 import BoardWriteUI from './BoardWrite.presenter';
 import { IBoardWriteProps, IFormData } from './BoardWrite.types';
 
-// boardId?, userId, userName
+// boardId?, userId v, userName v
 
 export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
+  const [token, setToken] = useState<string | null>(null);
+  const [myId, setMyId] = useState<number | null>(null);
+  const [myName, setMyName] = useState<string | null>(null);
+
   const [createBoard] = useMutation<
     Pick<IMutation, 'createBoard'>,
     IMutationCreateBoardArgs
@@ -33,11 +37,24 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const [isToggleModal, setIsToggleModal] = useState(false);
   const [addDetailOn, setAddDetailOn] = useState(false);
 
-  // userId, userName 받아오게 만들어야함.
-  // 만약에 로그인이 안되어있거나, 게시글 작성자가 아니면 이전페이지로 보내버리기
-  const userId = 2;
-  const userName = '이연우';
+  // useEffect로 localStorage에서 userToken과 userData 가져오기
+  useEffect(() => {
+    const storedToken = localStorage.getItem('userToken');
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
 
+    // 엑세스 토큰 설정
+    if (storedToken) {
+      setToken(storedToken);
+    }
+
+    // 유저 데이터가 있으면 myId 설정
+    if (storedUserData) {
+      setMyId(storedUserData.id);
+      setMyName(storedUserData.name);
+    }
+  }, []);
+
+  // 만약에 로그인이 안되어있거나, 게시글 작성자가 아니면 이전페이지로 보내버리기
   let isDataChange = 0;
 
   const { register, handleSubmit, setValue, formState, trigger } =
@@ -59,8 +76,8 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
             ...formData,
             isComplete: formData.isComplete === 'true',
             price: Number(formData.price),
-            userId,
-            userName,
+            userId: myId,
+            userName: myName,
           },
         },
       });
@@ -120,7 +137,7 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
       await updateBoard({
         variables: {
           boardId: Number(data.fetchBoard.id),
-          userId: Number(userId),
+          userId: Number(myId),
           updateBoardInput,
         },
       });

@@ -17,10 +17,12 @@ import {
   UPDATE_IS_COMPLETE,
   CREATE_CHAT_ROOM,
 } from './BoardDetail.queries';
+import { set } from 'react-hook-form';
 
 export default function BoardDetail() {
   const router = useRouter();
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [userData, setUserData] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [myId, setMyId] = useState<number | null>(null);
   const [userPermission, setUserPermission] = useState<number>(0);
 
@@ -31,6 +33,7 @@ export default function BoardDetail() {
     IQueryFetchBoardArgs
   >(FETCH_BOARD, {
     variables: { boardId: Number(router.query.boardId) },
+    skip: !router.query.boardId,
     onError() {
       Modal.error({ content: error.message });
       router.push('/boards');
@@ -52,26 +55,26 @@ export default function BoardDetail() {
     IMutationCreateChatRoomArgs
   >(CREATE_CHAT_ROOM);
 
-  // useEffect로 localStorage에서 accessToken과 userData 가져오기
+  // useEffect로 localStorage에서 userToken과 userData 가져오기
   useEffect(() => {
-    const storedAccessToken = localStorage.getItem('accessToken');
-    const storedUserData = localStorage.getItem('userData');
+    const storedToken = localStorage.getItem('userToken');
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
 
     // 엑세스 토큰 설정
-    if (storedAccessToken) {
-      setAccessToken(storedAccessToken);
+    if (storedToken) {
+      setToken(storedToken);
     }
 
     // 유저 데이터가 있으면 myId 설정
     if (storedUserData) {
-      const userData = JSON.parse(storedUserData);
-      setMyId(userData.id);
+      setUserData(storedUserData);
+      setMyId(storedUserData.id);
     }
   }, []);
 
   // 2. 권한 체크
   useEffect(() => {
-    if (!accessToken || !myId) {
+    if (!token || !myId) {
       console.log('권한: 비로그인');
       setUserPermission(0); // 비로그인 상태
     } else if (data && myId) {
@@ -84,7 +87,7 @@ export default function BoardDetail() {
         setUserPermission(1); // 로그인 상태지만 게시글 작성자가 아닌 경우
       }
     }
-  }, [accessToken, myId, data]);
+  }, [token, myId, data, userData]);
 
   const BoardDelete = async () => {
     try {
@@ -134,7 +137,7 @@ export default function BoardDetail() {
     try {
       const chatRoomId = await createChatRoom({
         variables: {
-          accessToken,
+          token,
           sellerId: Number(data?.fetchBoard.userId),
         },
       });

@@ -11,7 +11,7 @@ export const useAuth = (): void => {
   // 관리자만 입장 가능한 페이지
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken') === null) {
+    if (localStorage.getItem('userToken') === null) {
       Modal.error({ content: '로그인후 이용 가능한 페이지입니다.' });
       router.push('../../../../../auth/login');
     }

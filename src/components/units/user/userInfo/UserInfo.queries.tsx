@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const FETCH_USER_INFO_DATA = gql`
-  query fetchUserInfoData($accessToken: String!) {
-    fetchUserInfoData(accessToken: $accessToken) {
+  query fetchUserInfoData($token: String!) {
+    fetchUserInfoData(token: $token) {
       id
       name
       rating
@@ -16,11 +16,8 @@ export const FETCH_USER_INFO_DATA = gql`
 export const UPDATE_USER_DATA = gql`
   mutation updateUserData(
     $updateUserDataInput: UpdateUserDataInput!
-    $accessToken: String!
+    $token: String!
   ) {
-    updateUserData(
-      updateUserDataInput: $updateUserDataInput
-      accessToken: $accessToken
-    )
+    updateUserData(updateUserDataInput: $updateUserDataInput, token: $token)
   }
 `;
