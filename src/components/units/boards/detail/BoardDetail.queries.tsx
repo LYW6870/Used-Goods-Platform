@@ -20,15 +20,14 @@ export const FETCH_BOARD = gql`
 `;
 
 export const DELETE_BOARD = gql`
-  mutation deleteBoard($boardId: Int!, $userId: Int!) {
-    deleteBoard(boardId: $boardId, userId: $userId)
-    # {boolean} 반환값?
+  mutation deleteBoard($boardId: Int!, $token: String!) {
+    deleteBoard(boardId: $boardId, token: $token)
   }
 `;
 
-export const UPDATE_IS_COMPLETE = gql`
-  mutation updateIsComplete($boardId: Int!, $userId: Int!) {
-    updateIsComplete(boardId: $boardId, userId: $userId)
+export const BOARD_UPDATE_IS_COMPLETE = gql`
+  mutation boardUpdateIsComplete($boardId: Int!, $token: String!) {
+    boardUpdateIsComplete(boardId: $boardId, token: $token)
   }
 `;
 

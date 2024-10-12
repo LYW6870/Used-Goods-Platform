@@ -17,11 +17,8 @@ import { schema } from './BoardWrite.schema';
 import BoardWriteUI from './BoardWrite.presenter';
 import { IBoardWriteProps, IFormData } from './BoardWrite.types';
 
-// boardId?, userId v, userName v
-
 export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
   const [token, setToken] = useState<string | null>(null);
-  const [myId, setMyId] = useState<number | null>(null);
   const [myName, setMyName] = useState<string | null>(null);
 
   const [createBoard] = useMutation<
@@ -49,7 +46,6 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
 
     // 유저 데이터가 있으면 myId 설정
     if (storedUserData) {
-      setMyId(storedUserData.id);
       setMyName(storedUserData.name);
     }
   }, []);
@@ -72,17 +68,17 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     try {
       const result = await createBoard({
         variables: {
+          token,
           createBoardInput: {
             ...formData,
             isComplete: formData.isComplete === 'true',
             price: Number(formData.price),
-            userId: myId,
             userName: myName,
           },
         },
       });
       Modal.success({
-        content: ` ${result.data?.createBoard}번 게시글이 등록되었습니다.`,
+        content: ` 결과값: ${result.data?.createBoard}`,
       });
     } catch (error) {
       Modal.error({ content: error.message });
@@ -134,17 +130,21 @@ export default function BoardWrite({ isEdit, data }: IBoardWriteProps) {
     }
 
     try {
-      await updateBoard({
+      const result = await updateBoard({
         variables: {
           boardId: Number(data.fetchBoard.id),
-          userId: Number(myId),
+          token,
           updateBoardInput,
         },
       });
 
-      Modal.success({
-        content: '게시글 수정이 완료되었습니다.',
-      });
+      if (result.data?.updateBoard) {
+        Modal.success({
+          content: '게시글 수정이 완료되었습니다.',
+        });
+      } else {
+        Modal.error({ content: result.data?.updateBoard });
+      }
     } catch (error) {
       Modal.error({ content: error.message });
     }

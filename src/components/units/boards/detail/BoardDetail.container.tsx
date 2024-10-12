@@ -2,11 +2,12 @@ import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
 import { Modal } from 'antd';
 import { useEffect, useState } from 'react';
+import { set } from 'react-hook-form';
 import {
   IMutation,
+  IMutationBoardUpdateIsCompleteArgs,
   IMutationCreateChatRoomArgs,
   IMutationDeleteBoardArgs,
-  IMutationUpdateIsCompleteArgs,
   IQuery,
   IQueryFetchBoardArgs,
 } from '../../../../commons/types/generated/types';
@@ -14,16 +15,15 @@ import BoardDetailUI from './BoardDetail.presenter';
 import {
   DELETE_BOARD,
   FETCH_BOARD,
-  UPDATE_IS_COMPLETE,
+  BOARD_UPDATE_IS_COMPLETE,
   CREATE_CHAT_ROOM,
 } from './BoardDetail.queries';
-import { set } from 'react-hook-form';
 
 export default function BoardDetail() {
   const router = useRouter();
   const [userData, setUserData] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [myId, setMyId] = useState<number | null>(null);
+  const [myId, setMyId] = useState<number | null>(null); // myId가 아니라 BoardWriteId 혹은 sellerId가 맞는듯.
   const [userPermission, setUserPermission] = useState<number>(0);
 
   // 회원일경우, 비회원일경우, 내가 작성한 글일 경우 3가지
@@ -45,10 +45,10 @@ export default function BoardDetail() {
     IMutationDeleteBoardArgs
   >(DELETE_BOARD);
 
-  const [updateIsComplete] = useMutation<
-    Pick<IMutation, 'updateIsComplete'>,
-    IMutationUpdateIsCompleteArgs
-  >(UPDATE_IS_COMPLETE);
+  const [boardUpdateIsComplete] = useMutation<
+    Pick<IMutation, 'boardUpdateIsComplete'>,
+    IMutationBoardUpdateIsCompleteArgs
+  >(BOARD_UPDATE_IS_COMPLETE);
 
   const [createChatRoom] = useMutation<
     Pick<IMutation, 'createChatRoom'>,
@@ -91,11 +91,16 @@ export default function BoardDetail() {
 
   const BoardDelete = async () => {
     try {
-      await deleteBoard({
-        variables: { boardId: Number(router.query.boardId), userId: myId },
+      const result = await deleteBoard({
+        variables: { boardId: Number(router.query.boardId), token },
       });
-      Modal.success({ content: '성공적으로 게시글 삭제가 완료되었습니다.' });
-      router.push('/boards');
+
+      if (result.data?.deleteBoard) {
+        Modal.success({ content: '성공적으로 게시글 삭제가 완료되었습니다.' });
+        router.push('/boards');
+      } else {
+        Modal.error({ content: '게시글 삭제 오류' });
+      }
     } catch (err) {
       Modal.error({ content: err.message });
     }
@@ -121,10 +126,10 @@ export default function BoardDetail() {
 
   const onClickCompleteBoard = async () => {
     try {
-      await updateIsComplete({
+      await boardUpdateIsComplete({
         variables: {
           boardId: Number(router.query.boardId),
-          userId: myId,
+          token,
         },
       });
       Modal.success({ content: '성공적으로 거래 완료 처리 되었습니다.' });

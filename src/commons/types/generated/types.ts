@@ -95,7 +95,6 @@ export type ICreateBoardInput = {
   isComplete: Scalars['Boolean']['input'];
   price: Scalars['Int']['input'];
   title: Scalars['String']['input'];
-  userId: Scalars['Int']['input'];
   userName: Scalars['String']['input'];
 };
 
@@ -122,13 +121,13 @@ export type IKakaoTokenCheckResult = {
 export type IMutation = {
   __typename?: 'Mutation';
   boardUpdateIsComplete?: Maybe<Scalars['Boolean']['output']>;
-  createBoard?: Maybe<Scalars['Int']['output']>;
+  createBoard?: Maybe<Scalars['Boolean']['output']>;
   createLocalUser?: Maybe<Scalars['Boolean']['output']>;
   deleteBoard?: Maybe<Scalars['Boolean']['output']>;
   kakaoLogin?: Maybe<IUser>;
   kakaoTokenCheck: IKakaoTokenCheckResult;
   loginLocalUser: Scalars['String']['output'];
-  updateBoard?: Maybe<IBoard>;
+  updateBoard?: Maybe<Scalars['Boolean']['output']>;
   updateUserData?: Maybe<Scalars['Boolean']['output']>;
   userLogout?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -136,12 +135,13 @@ export type IMutation = {
 
 export type IMutationBoardUpdateIsCompleteArgs = {
   boardId: Scalars['Int']['input'];
-  userId: Scalars['Int']['input'];
+  token: Scalars['String']['input'];
 };
 
 
 export type IMutationCreateBoardArgs = {
-  createBoardInput?: InputMaybe<ICreateBoardInput>;
+  createBoardInput: ICreateBoardInput;
+  token: Scalars['String']['input'];
 };
 
 
@@ -152,7 +152,7 @@ export type IMutationCreateLocalUserArgs = {
 
 export type IMutationDeleteBoardArgs = {
   boardId?: InputMaybe<Scalars['Int']['input']>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  token: Scalars['String']['input'];
 };
 
 
@@ -174,8 +174,8 @@ export type IMutationLoginLocalUserArgs = {
 
 export type IMutationUpdateBoardArgs = {
   boardId: Scalars['Int']['input'];
+  token: Scalars['String']['input'];
   updateBoardInput?: InputMaybe<IUpdateBoardInput>;
-  userId: Scalars['Int']['input'];
 };
 
 

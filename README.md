@@ -1,40 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+<h2>[2024] 중고 거래 플랫폼</h2>
+사용자들이 중고 물품을 거래할 수 있는 플랫폼을 개발중하고 있습니다.
+</div>
 
-## Getting Started
+## 목차
 
-First, run the development server:
+- [개요](#개요)
+- [사용된 기술 스택](#사용된 기술 스택)
+- [현재 구현된 기능들](#현재 구현된 기능들)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 개요
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 프로젝트 이름: Used Goods Platform
+- 프로젝트 개발기간: 2024.06 - 개발 진행중
+- 개발 블로그 주소 : https://yeonstory97.tistory.com/
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## 사용된 기술 스택
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- 프론트엔드:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+  - HTML, CSS, JavaScript, TypeScript
+  - React, Next.js
+  - Axios, GraphQL
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 백엔드:
 
-## Learn More
+  - Node.js
+  - PostgreSQL
+  - GraphQL, REST API
 
-To learn more about Next.js, take a look at the following resources:
+- 데이터베이스 관리:
+  - PostgreSQL
+  - DBeaver, Prisma
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 현재 구현된 기능들
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- 소셜 로그인 (카카오), 로컬 로그인
+- 게시물 검색, 등록, 수정, 삭제
+- 판매자와 구매자간 채팅기능
